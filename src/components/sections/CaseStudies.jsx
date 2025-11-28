@@ -24,14 +24,14 @@ const cases = [
     result: 'What used to take weeks of expert analysis now takes minutes. Companies can confidently navigate regulatory requirements and get to market faster, with less risk of costly compliance gaps.',
   },
   {
-    id: 'production',
-    title: 'Production Company',
-    subtitle: 'Real-time Dashboard & Analytics',
-    industry: 'Media Production',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=1000&fit=crop',
-    challenge: null,
-    solution: null,
-    result: null,
+    id: 'networking',
+    title: 'Network Equipment Distributor',
+    subtitle: 'AI-powered product advisor',
+    industry: 'IT & Networking',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=1000&fit=crop',
+    challenge: 'With over 1,000 products across switches, routers, access points, and security appliances, even experienced sales reps struggled to recommend the right solution. Customers would describe their needs, and finding the perfect match meant digging through endless spec sheets and compatibility matrices. Deals stalled while teams scrambled to piece together answers.',
+    solution: 'We built a comprehensive product database with detailed specifications, compatibility data, and use-case mappings. On top of this, we created an AI assistant that sales teams and customers can query in plain language. Ask "What switch handles 500 users with PoE+ for access points?" and get instant, accurate recommendations with full reasoning.',
+    result: 'Sales cycles shortened dramatically. Reps now handle complex technical questions in seconds instead of hours. Customer satisfaction improved as they get confident, well-matched recommendations on the first try. The system even surfaces cross-sell opportunities that humans would miss.',
   },
 ];
 

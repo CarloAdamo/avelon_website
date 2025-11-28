@@ -4,6 +4,7 @@ import Services from './components/sections/Services';
 import CaseStudies from './components/sections/CaseStudies';
 import About from './components/sections/About';
 import Career from './components/sections/Career';
+import Contact from './components/sections/Contact';
 import Footer from './components/Footer';
 import { CalendlyProvider } from './context/CalendlyContext';
 
@@ -17,6 +18,7 @@ function App() {
         <CaseStudies />
         <About />
         <Career />
+        <Contact />
         <Footer />
       </div>
     </CalendlyProvider>

@@ -1,5 +1,5 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
 import Container from '../ui/Container';
 
 const positions = [
@@ -28,6 +28,7 @@ const positions = [
 export default function Career() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [expandedId, setExpandedId] = useState(null);
 
   return (
     <section id="career" className="relative py-32 md:py-48 bg-[#0a0a0a]">
@@ -51,71 +52,109 @@ export default function Career() {
         </motion.div>
 
         <div className="space-y-8">
-          {positions.map((position, index) => (
-            <motion.div
-              key={position.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="border border-white/10 p-8 md:p-12 hover:border-[#6B5B95]/50 transition-colors"
-            >
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                    {position.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    <span className="text-[#A78BFA]">{position.type}</span>
-                    <span className="text-white/50">|</span>
-                    <span className="text-white/70">{position.location}</span>
+          {positions.map((position, index) => {
+            const isExpanded = expandedId === position.id;
+            return (
+              <motion.div
+                key={position.id}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className={`border transition-colors ${isExpanded ? 'border-[#6B5B95]/50' : 'border-white/10 hover:border-[#6B5B95]/50'}`}
+              >
+                {/* Header - Always visible, clickable */}
+                <div
+                  onClick={() => setExpandedId(isExpanded ? null : position.id)}
+                  className="p-8 md:p-12 cursor-pointer"
+                >
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                        {position.title}
+                      </h3>
+                      <div className="flex flex-wrap gap-4 text-sm">
+                        <span className="text-[#A78BFA]">{position.type}</span>
+                        <span className="text-white/50">|</span>
+                        <span className="text-white/70">{position.location}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center text-white/50 text-sm">
+                      <span>{isExpanded ? 'Close' : 'View role'}</span>
+                      <motion.svg
+                        className="w-4 h-4 ml-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+                      </motion.svg>
+                    </div>
                   </div>
                 </div>
-                <a
-                  href="mailto:careers@avelon.ai"
-                  className="inline-flex items-center px-6 py-3 border border-[#6B5B95] text-[#A78BFA] hover:bg-[#6B5B95]/20 transition-colors text-sm font-medium"
-                >
-                  Apply now
-                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
-              </div>
 
-              <p className="text-white/70 mb-8 leading-relaxed">
-                {position.description}
-              </p>
+                {/* Expandable content */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-8 md:px-12 pb-8 md:pb-12 border-t border-white/10">
+                        <p className="text-white/70 my-8 leading-relaxed">
+                          {position.description}
+                        </p>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-[#A78BFA] text-sm font-semibold mb-4 uppercase tracking-wider">
-                    What we're looking for
-                  </h4>
-                  <ul className="space-y-3">
-                    {position.requirements.map((req, i) => (
-                      <li key={i} className="text-white/70 text-sm leading-relaxed flex">
-                        <span className="text-[#6B5B95] mr-3">—</span>
-                        {req}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                        <div className="grid md:grid-cols-2 gap-8 mb-8">
+                          <div>
+                            <h4 className="text-[#A78BFA] text-sm font-semibold mb-4 uppercase tracking-wider">
+                              What we're looking for
+                            </h4>
+                            <ul className="space-y-3">
+                              {position.requirements.map((req, i) => (
+                                <li key={i} className="text-white/70 text-sm leading-relaxed flex">
+                                  <span className="text-[#6B5B95] mr-3">—</span>
+                                  {req}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
 
-                <div>
-                  <h4 className="text-[#A78BFA] text-sm font-semibold mb-4 uppercase tracking-wider">
-                    Nice to have
-                  </h4>
-                  <ul className="space-y-3">
-                    {position.nice.map((item, i) => (
-                      <li key={i} className="text-white/70 text-sm leading-relaxed flex">
-                        <span className="text-[#6B5B95] mr-3">—</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                          <div>
+                            <h4 className="text-[#A78BFA] text-sm font-semibold mb-4 uppercase tracking-wider">
+                              Nice to have
+                            </h4>
+                            <ul className="space-y-3">
+                              {position.nice.map((item, i) => (
+                                <li key={i} className="text-white/70 text-sm leading-relaxed flex">
+                                  <span className="text-[#6B5B95] mr-3">—</span>
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <a
+                          href="mailto:careers@avelon.ai"
+                          className="inline-flex items-center px-6 py-3 border border-[#6B5B95] text-[#A78BFA] hover:bg-[#6B5B95]/20 transition-colors text-sm font-medium"
+                        >
+                          Apply now
+                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </a>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
 
         <motion.p

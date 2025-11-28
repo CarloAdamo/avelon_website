@@ -21,6 +21,7 @@ export default function Navbar() {
     { name: 'Customer Stories', href: '#cases' },
     { name: 'About us', href: '#about' },
     { name: 'Career', href: '#career' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   return (

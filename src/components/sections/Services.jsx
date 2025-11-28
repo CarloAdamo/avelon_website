@@ -1,6 +1,7 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import Container from '../ui/Container';
+import { useCalendly } from '../../context/CalendlyContext';
 
 const services = [
   {
@@ -33,6 +34,7 @@ export default function Services() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [expandedId, setExpandedId] = useState(null);
+  const { openCalendly } = useCalendly();
 
   return (
     <section id="services" className="relative py-32 md:py-48 bg-black overflow-hidden">
@@ -155,15 +157,15 @@ export default function Services() {
           transition={{ duration: 0.8, delay: 0.7 }}
           className="mt-16 text-right"
         >
-          <a
-            href="#contact"
+          <button
+            onClick={openCalendly}
             className="group inline-flex items-center text-white/80 hover:text-white transition-colors text-lg"
           >
-            <span className="mr-2">Get in touch</span>
+            <span className="mr-2">Book a meeting</span>
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </a>
+          </button>
         </motion.div>
       </Container>
     </section>

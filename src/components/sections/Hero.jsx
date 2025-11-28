@@ -1,12 +1,10 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import Container from '../ui/Container';
-import { useCalendly } from '../../context/CalendlyContext';
 
 export default function Hero() {
   const ref = useRef(null);
   const videoRef = useRef(null);
-  const { openCalendly } = useCalendly();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"]
@@ -94,8 +92,8 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <button
-              onClick={openCalendly}
+            <a
+              href="#contact"
               className="group inline-flex items-center text-white/90 hover:text-[#6B5B95] transition-colors duration-300 text-lg"
             >
               <span className="mr-3">Get in touch</span>
@@ -109,7 +107,7 @@ export default function Hero() {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </motion.svg>
-            </button>
+            </a>
           </motion.div>
         </motion.div>
       </Container>
