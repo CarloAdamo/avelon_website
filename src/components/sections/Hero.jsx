@@ -23,7 +23,7 @@ export default function Hero() {
           autoPlay
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-[70%_center] md:object-center"
           style={{ filter: 'brightness(0.8)' }}
         >
           <source src="/space-bg.mp4" type="video/mp4" />

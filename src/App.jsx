@@ -3,6 +3,7 @@ import Hero from './components/sections/Hero';
 import Services from './components/sections/Services';
 import CaseStudies from './components/sections/CaseStudies';
 import About from './components/sections/About';
+import Career from './components/sections/Career';
 import Footer from './components/Footer';
 import { CalendlyProvider } from './context/CalendlyContext';
 
@@ -15,6 +16,7 @@ function App() {
         <Services />
         <CaseStudies />
         <About />
+        <Career />
         <Footer />
       </div>
     </CalendlyProvider>

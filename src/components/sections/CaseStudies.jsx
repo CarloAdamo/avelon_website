@@ -35,6 +35,98 @@ const cases = [
   },
 ];
 
+function CaseCard({ caseStudy, index, isInView, isExpanded, onToggle }) {
+  const hasDetails = Boolean(caseStudy.challenge);
+
+  return (
+    <div>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={{ duration: 0.6, delay: index * 0.15 }}
+        onClick={() => hasDetails && onToggle()}
+        className={`group relative aspect-[3/4] overflow-hidden ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
+      >
+        {/* Image */}
+        <img
+          src={caseStudy.image}
+          alt={caseStudy.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+
+        {/* Dark overlay */}
+        <div className={`absolute inset-0 transition-colors duration-300 ${
+          isExpanded ? 'bg-black/60' : 'bg-black/40 group-hover:bg-black/30'
+        }`} />
+
+        {/* Grid overlay */}
+        <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
+
+        {/* Border when expanded */}
+        {isExpanded && (
+          <div className="absolute inset-0 border-2 border-[#6B5B95] pointer-events-none" />
+        )}
+
+        {/* Content */}
+        <div className="absolute inset-0 p-8 flex flex-col justify-end">
+          <p className="text-[#A78BFA] text-sm mb-2">{caseStudy.industry}</p>
+          <h3 className="text-2xl font-bold text-white mb-2">
+            {caseStudy.title}
+          </h3>
+          <p className="text-white/70 text-sm">
+            {caseStudy.subtitle}
+          </p>
+          {hasDetails && (
+            <p className="text-white/50 text-sm mt-4 flex items-center">
+              <span>{isExpanded ? 'Close' : 'Read story'}</span>
+              <motion.svg
+                className="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                animate={{ rotate: isExpanded ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+              </motion.svg>
+            </p>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Mobile: Expanded content directly below each card */}
+      <AnimatePresence>
+        {isExpanded && caseStudy.challenge && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="overflow-hidden md:hidden"
+          >
+            <div className="bg-[#0a0a0a] border border-white/10 border-t-0 p-6">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-[#A78BFA] text-sm font-semibold mb-2 uppercase tracking-wider">The Challenge</h4>
+                  <p className="text-white/80 text-sm leading-relaxed">{caseStudy.challenge}</p>
+                </div>
+                <div>
+                  <h4 className="text-[#A78BFA] text-sm font-semibold mb-2 uppercase tracking-wider">The Solution</h4>
+                  <p className="text-white/80 text-sm leading-relaxed">{caseStudy.solution}</p>
+                </div>
+                <div>
+                  <h4 className="text-[#A78BFA] text-sm font-semibold mb-2 uppercase tracking-wider">The Result</h4>
+                  <p className="text-white/80 text-sm leading-relaxed">{caseStudy.result}</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function CaseStudies() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -60,70 +152,19 @@ export default function CaseStudies() {
 
         {/* Cases Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          {cases.map((caseStudy, index) => {
-            const hasDetails = Boolean(caseStudy.challenge);
-            const isExpanded = expandedId === caseStudy.id;
-
-            return (
-              <motion.div
-                key={caseStudy.id}
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
-                onClick={() => hasDetails && setExpandedId(isExpanded ? null : caseStudy.id)}
-                className={`group relative aspect-[3/4] overflow-hidden ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
-              >
-                {/* Image */}
-                <img
-                  src={caseStudy.image}
-                  alt={caseStudy.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-
-                {/* Dark overlay */}
-                <div className={`absolute inset-0 transition-colors duration-300 ${
-                  isExpanded ? 'bg-black/60' : 'bg-black/40 group-hover:bg-black/30'
-                }`} />
-
-                {/* Grid overlay */}
-                <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-
-                {/* Border when expanded */}
-                {isExpanded && (
-                  <div className="absolute inset-0 border-2 border-[#6B5B95] pointer-events-none" />
-                )}
-
-                {/* Content */}
-                <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                  <p className="text-[#A78BFA] text-sm mb-2">{caseStudy.industry}</p>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {caseStudy.title}
-                  </h3>
-                  <p className="text-white/70 text-sm">
-                    {caseStudy.subtitle}
-                  </p>
-                  {hasDetails && (
-                    <p className="text-white/50 text-sm mt-4 flex items-center">
-                      <span>{isExpanded ? 'Close' : 'Read story'}</span>
-                      <motion.svg
-                        className="w-4 h-4 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        animate={{ rotate: isExpanded ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-                      </motion.svg>
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
+          {cases.map((caseStudy, index) => (
+            <CaseCard
+              key={caseStudy.id}
+              caseStudy={caseStudy}
+              index={index}
+              isInView={isInView}
+              isExpanded={expandedId === caseStudy.id}
+              onToggle={() => setExpandedId(expandedId === caseStudy.id ? null : caseStudy.id)}
+            />
+          ))}
         </div>
 
-        {/* Expanded Content - Below the grid */}
+        {/* Desktop: Expanded Content - Below the grid */}
         <AnimatePresence>
           {expandedCase && expandedCase.challenge && (
             <motion.div
@@ -131,7 +172,7 @@ export default function CaseStudies() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="overflow-hidden"
+              className="overflow-hidden hidden md:block"
             >
               <div className="bg-[#0a0a0a] border border-white/10 mt-8 p-8 md:p-12">
                 <div className="grid md:grid-cols-3 gap-8 md:gap-12">

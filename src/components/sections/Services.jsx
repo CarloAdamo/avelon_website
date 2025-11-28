@@ -145,17 +145,6 @@ export default function Services() {
               className="border-t border-white/10 pt-8"
             />
 
-            {/* End-to-end text (rotated) */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="absolute right-0 bottom-16 origin-bottom-right"
-            >
-              <span className="text-[#6B5B95] text-sm tracking-widest rotate-90 inline-block">
-                End-to-end
-              </span>
-            </motion.div>
           </div>
         </div>
 
