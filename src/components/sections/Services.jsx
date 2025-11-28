@@ -37,7 +37,7 @@ export default function Services() {
   return (
     <section id="services" className="relative py-32 md:py-48 bg-black overflow-hidden">
       {/* Grid background */}
-      <div className="absolute inset-0 grid-bg opacity-50" />
+      <div className="absolute inset-0 grid-bg opacity-50 pointer-events-none" />
 
       <Container>
         <div className="grid md:grid-cols-2 gap-16 items-start">
