@@ -1,15 +1,17 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import Container from '../ui/Container';
+import { useCalendly } from '../../context/CalendlyContext';
 
 export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const { openCalendly } = useCalendly();
 
   return (
     <section id="about" className="relative py-32 md:py-48 bg-black">
       {/* Grid background */}
-      <div className="absolute inset-0 grid-bg opacity-30" />
+      <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
       <Container>
         <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -21,20 +23,19 @@ export default function About() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">
-              En ny typ av <span className="text-[#6B5B95]">IT-konsult</span>
+              A new kind of <span className="text-[#6B5B95]">IT partner</span>
             </h2>
 
             <div className="space-y-6 text-white/90 leading-relaxed">
               <p>
-                Traditionella IT-konsulter hjälper med datorer, nätverk och telefoner.
-                Vi går djupare. Vi transformerar hela arbetssättet med moderna verktyg
-                som AI-agenter, no-code plattformar och intelligenta automatiseringar.
+                Traditional IT consultants help with computers, networks, and phones.
+                We go deeper. We transform the way you work with modern tools that
+                automate tasks, connect your systems, and give you superpowers.
               </p>
               <p>
-                Med Airtable bygger vi kraftfulla databaser. Med Make och n8n kopplar vi
-                samman era system. Med AI skapar vi intelligenta agenter som automatiserar
-                repetitivt arbete. Och med moderna utvecklingsverktyg bygger vi
-                skräddarsydda appar på rekordtid.
+                We build powerful databases to organize your business. We connect your
+                tools so data flows automatically. We create AI assistants that handle
+                repetitive work. And we build custom apps when off-the-shelf just won't do.
               </p>
             </div>
 
@@ -44,15 +45,15 @@ export default function About() {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="mt-8"
             >
-              <a
-                href="#contact"
+              <button
+                onClick={openCalendly}
                 className="group inline-flex items-center text-white/80 hover:text-white transition-colors text-lg"
               >
-                <span className="mr-2">Låt oss prata</span>
+                <span className="mr-2">Let's talk</span>
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </a>
+              </button>
             </motion.div>
           </motion.div>
 

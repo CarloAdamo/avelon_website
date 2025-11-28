@@ -22,7 +22,6 @@ export default function Hero() {
           ref={videoRef}
           autoPlay
           muted
-          loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: 'brightness(0.8)' }}
@@ -58,7 +57,7 @@ export default function Hero() {
             transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-6xl md:text-8xl font-extrabold text-white mb-8 leading-tight"
           >
-            Modern IT för{' '}
+            Modern IT for{' '}
             <br />
             <motion.span
               className="text-[#6B5B95] inline-block"
@@ -66,7 +65,7 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              AI-eran
+              the AI era
             </motion.span>
             <motion.span
               initial={{ opacity: 0 }}
@@ -84,9 +83,9 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-xl md:text-2xl text-white mb-12 max-w-3xl leading-relaxed"
           >
-            Vi hjälper SME-bolag att transformera sitt sätt att arbeta med AI-agenter,
-            no-code verktyg och intelligenta automatiseringar. En helhets­leverantör
-            för den digitala framtiden.
+            AI has leveled the playing field. We help businesses unlock capabilities
+            that were once reserved for the few. Automating work, building custom tools,
+            and scaling smarter.
           </motion.p>
 
           {/* CTA */}

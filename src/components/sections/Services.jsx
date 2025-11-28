@@ -13,19 +13,19 @@ const services = [
     id: 'ai',
     name: 'AI Agents & Automation',
     delay: 0.2,
-    description: null
+    description: 'Let AI handle the repetitive work so your team can focus on what matters. We build intelligent agents that answer customer questions, process documents, update systems, and connect your tools - all running 24/7 without manual effort. From simple automations to advanced AI assistants, we help you work smarter, not harder.'
   },
   {
     id: 'apps',
     name: 'Custom App Development',
     delay: 0.3,
-    description: null
+    description: 'Sometimes off-the-shelf tools just don\'t cut it. We build custom web and mobile applications tailored to your exact needs - from internal tools that streamline operations to customer-facing apps that drive growth. Modern technology, fast delivery, and built to scale with your business.'
   },
   {
     id: 'consulting',
     name: 'Modern Tech Consulting',
     delay: 0.4,
-    description: null
+    description: 'Not sure where to start? We help you navigate the rapidly changing tech landscape and find the right solutions for your business. From evaluating new tools to planning digital transformation, we provide strategic guidance that cuts through the hype and focuses on real results.'
   },
 ];
 
