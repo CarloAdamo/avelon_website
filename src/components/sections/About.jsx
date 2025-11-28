@@ -21,10 +21,10 @@ export default function About() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">
-              En ny typ av <span className="text-[#8cbdc3]">IT-konsult</span>
+              En ny typ av <span className="text-[#6B5B95]">IT-konsult</span>
             </h2>
 
-            <div className="space-y-6 text-white/70 leading-relaxed">
+            <div className="space-y-6 text-white/90 leading-relaxed">
               <p>
                 Traditionella IT-konsulter hjälper med datorer, nätverk och telefoner.
                 Vi går djupare. Vi transformerar hela arbetssättet med moderna verktyg

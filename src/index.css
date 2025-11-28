@@ -3,8 +3,8 @@
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  --color-teal: #8cbdc3;
-  --color-gold: #c9a961;
+  --color-accent: #6B5B95;
+  --color-secondary: #4A4878;
   --color-dark: #0a0a0a;
 
   --animate-fadeIn: fadeIn 1s ease-in;
@@ -39,7 +39,7 @@ body {
 /* Grid background pattern */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(140, 189, 195, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(140, 189, 195, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(107, 91, 149, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(107, 91, 149, 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
 }

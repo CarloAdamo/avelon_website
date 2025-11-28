@@ -61,7 +61,7 @@ export default function Hero() {
             Modern IT för{' '}
             <br />
             <motion.span
-              className="text-[#c9a961] inline-block"
+              className="text-[#6B5B95] inline-block"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
@@ -82,7 +82,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
-            className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl leading-relaxed"
+            className="text-xl md:text-2xl text-white mb-12 max-w-3xl leading-relaxed"
           >
             Vi hjälper SME-bolag att transformera sitt sätt att arbeta med AI-agenter,
             no-code verktyg och intelligenta automatiseringar. En helhets­leverantör
@@ -97,7 +97,7 @@ export default function Hero() {
           >
             <button
               onClick={openCalendly}
-              className="group inline-flex items-center text-white/80 hover:text-[#c9a961] transition-colors duration-300 text-lg"
+              className="group inline-flex items-center text-white/90 hover:text-[#6B5B95] transition-colors duration-300 text-lg"
             >
               <span className="mr-3">Get in touch</span>
               <motion.svg
