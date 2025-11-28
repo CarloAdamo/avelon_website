@@ -17,8 +17,8 @@ function App() {
         <Services />
         <CaseStudies />
         <About />
-        <Career />
         <Contact />
+        <Career />
         <Footer />
       </div>
     </CalendlyProvider>

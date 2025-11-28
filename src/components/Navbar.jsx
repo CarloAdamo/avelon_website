@@ -20,8 +20,8 @@ export default function Navbar() {
     { name: 'Our services', href: '#services' },
     { name: 'Customer Stories', href: '#cases' },
     { name: 'About us', href: '#about' },
-    { name: 'Career', href: '#career' },
     { name: 'Contact', href: '#contact' },
+    { name: 'Career', href: '#career' },
   ];
 
   return (
