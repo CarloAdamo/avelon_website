@@ -23,7 +23,7 @@ export default function About() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">
-              A new kind of <span className="text-[#6B5B95]">IT partner</span>
+              A new kind of <span className="text-[#6B5B95]">digital partner</span>
             </h2>
 
             <div className="space-y-6 text-white/90 leading-relaxed">

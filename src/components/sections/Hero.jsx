@@ -55,16 +55,17 @@ export default function Hero() {
             transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-6xl md:text-8xl font-extrabold text-white mb-8 leading-tight"
           >
-            Modern IT for{' '}
-            <br />
+            A new type of{' '}
             <motion.span
               className="text-[#6B5B95] inline-block"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              the AI era
+              digital partner
             </motion.span>
+            <br />
+            for the AI era
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
