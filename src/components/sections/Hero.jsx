@@ -43,7 +43,7 @@ export default function Hero() {
         }}
       />
 
-      <Container className="relative z-10">
+      <Container className="relative z-10 pt-20 md:pt-0">
         <motion.div
           className="max-w-4xl"
           style={{ opacity }}
@@ -53,9 +53,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            className="text-6xl md:text-8xl font-extrabold text-white mb-8 leading-tight"
+            className="text-4xl md:text-8xl font-extrabold text-white mb-8 leading-tight"
           >
-            A new type of{' '}
+            <span className="md:hidden">Your </span>
+            <span className="hidden md:inline">A new type of </span>
             <motion.span
               className="text-[#6B5B95] inline-block"
               initial={{ opacity: 0, y: 30 }}
@@ -65,7 +66,8 @@ export default function Hero() {
               digital partner
             </motion.span>
             <br />
-            for the AI era
+            <span className="md:hidden">for the AI era</span>
+            <span className="hidden md:inline">for the AI era</span>
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
