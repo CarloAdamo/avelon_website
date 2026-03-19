@@ -5,13 +5,13 @@ import Container from '../ui/Container';
 const cases = [
   {
     id: 'music',
-    title: 'Music Publishing Company',
-    subtitle: 'AI-powered data assistant',
+    title: 'Odd Music',
+    subtitle: 'AI-powered music publishing platform',
     industry: 'Music & Entertainment',
     image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&h=1000&fit=crop',
-    challenge: 'The team was drowning in scattered information. Song rights, distributor deals, agent contacts, and revenue data lived in emails, spreadsheets, and sticky notes. Finding answers to simple questions like "What did we earn on that track?" or "Which agent handles this artist?" meant hours of digging.',
-    solution: 'We built a Slack-based AI assistant connected to a central database. Team members simply message the bot in natural language. The AI figures out what they need, routes to the right automation, and stores or retrieves data instantly. No more hunting through files.',
-    result: 'Questions that used to take 30 minutes now take 30 seconds. The entire catalog is searchable, and new information flows in naturally through conversation.',
+    challenge: 'Everything lived in Google Drive and Dropbox — spreadsheets for royalties, shared folders for contracts, endless email threads to find basic information. A small team spending big hours on admin instead of music.',
+    solution: 'We built their entire operating platform from scratch. At the center sits an AI agent that manages their catalog, generates press releases, and answers any question about their business instantly. The team chats directly with their documents, creates releases, and runs their publishing operation — all from one place.',
+    result: 'A small team now runs like a major label. In the founder\'s words: "This is worth millions."',
   },
   {
     id: 'medtech',
@@ -24,14 +24,14 @@ const cases = [
     result: 'What used to take weeks of expert analysis now takes minutes. Companies can confidently navigate regulatory requirements and get to market faster, with less risk of costly compliance gaps.',
   },
   {
-    id: 'networking',
-    title: 'Network Equipment Distributor',
-    subtitle: 'AI-powered product advisor',
-    industry: 'IT & Networking',
+    id: 'retail',
+    title: 'Consumer Goods Company',
+    subtitle: 'AI-powered retail data automation',
+    industry: 'Consumer Goods & Retail',
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=1000&fit=crop',
-    challenge: 'With over 1,000 products across switches, routers, access points, and security appliances, even experienced sales reps struggled to recommend the right solution. Customers would describe their needs, and finding the perfect match meant digging through endless spec sheets and compatibility matrices. Deals stalled while teams scrambled to piece together answers.',
-    solution: 'We built a comprehensive product database with detailed specifications, compatibility data, and use-case mappings. On top of this, we created an AI assistant that sales teams and customers can query in plain language. Ask "What switch handles 500 users with PoE+ for access points?" and get instant, accurate recommendations with full reasoning.',
-    result: 'Sales cycles shortened dramatically. Reps now handle complex technical questions in seconds instead of hours. Customer satisfaction improved as they get confident, well-matched recommendations on the first try. The system even surfaces cross-sell opportunities that humans would miss.',
+    challenge: 'Several times a year, the team had to manually fill in product data files for major retailers like Kicks and Apoteket. Each retailer has their own Excel format, their own column names, their own units. "Packaging in ml" in one file means "pack in cl" in their own system. Weeks of tedious, error-prone copy-paste work.',
+    solution: 'We built a system where you upload your own product data and the retailer\'s template. An AI maps between the two — translating units, matching field names, and filling in the spreadsheet automatically without breaking the retailer\'s formatting.',
+    result: 'Weeks of manual work reduced to minutes. No more formatting errors, no more missed fields, no more dreading retailer season.',
   },
 ];
 
