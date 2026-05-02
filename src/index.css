@@ -2,12 +2,14 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hand: 'Caveat', 'Inter', cursive;
 
   --color-accent: #6B5B95;
   --color-secondary: #4A4878;
   --color-dark: #0a0a0a;
 
   --animate-fadeIn: fadeIn 1s ease-in;
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
 
   @keyframes fadeIn {
     from {
@@ -17,6 +19,17 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5) rotate(0deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1) rotate(0deg);
     }
   }
 }

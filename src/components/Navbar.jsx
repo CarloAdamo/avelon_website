@@ -6,42 +6,57 @@ import { useCalendly } from '../context/CalendlyContext';
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { openCalendly } = useCalendly();
+  // openCalendly imported for parity with other components — currently unused in nav
+  useCalendly();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navItems = [
-    { name: 'Our services', href: '#services' },
     { name: 'Customer Stories', href: '#cases' },
-    { name: 'About us', href: '#about' },
     { name: 'Contact', href: '#contact' },
     { name: 'Career', href: '#career' },
   ];
 
+  // Page is now all cream paper — light-mode navbar throughout
+  const navBg = isScrolled ? 'bg-[#F3ECE1]/90 backdrop-blur-sm' : 'bg-transparent';
+  const linkColor = 'text-[#1f1a14]/75 hover:text-[#1f1a14]';
+  const burgerColor = 'bg-[#1f1a14]';
+
   return (
     <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <Container>
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+          {/* Logo + wordmark */}
           <motion.a
             href="#"
-            className="flex items-center"
+            className="flex items-center gap-3"
             whileHover={{ scale: 1.02 }}
           >
-            <img src="/avelon-logo.svg" alt="Avelon" className="h-20" />
+            <img
+              src="/avelon-logo.png"
+              alt="Avelon"
+              className="h-14 md:h-16"
+            />
+            <span
+              className="font-extrabold tracking-tight"
+              style={{
+                color: '#1f1a14',
+                fontSize: 'clamp(1.5rem, 1.6vw, 1.75rem)',
+                lineHeight: 1,
+              }}
+            >
+              Avelon
+            </span>
           </motion.a>
 
           {/* Desktop Navigation */}
@@ -50,7 +65,7 @@ export default function Navbar() {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-white/80 hover:text-white transition-colors duration-200 text-sm"
+                className={`${linkColor} transition-colors duration-200 text-sm`}
               >
                 {item.name}
               </a>
@@ -75,15 +90,15 @@ export default function Navbar() {
           >
             <div className="w-6 h-5 flex flex-col justify-between">
               <motion.span
-                className="w-full h-0.5 bg-white rounded"
+                className={`w-full h-0.5 ${burgerColor} rounded`}
                 animate={isMobileMenuOpen ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
               />
               <motion.span
-                className="w-full h-0.5 bg-white rounded"
+                className={`w-full h-0.5 ${burgerColor} rounded`}
                 animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
               />
               <motion.span
-                className="w-full h-0.5 bg-white rounded"
+                className={`w-full h-0.5 ${burgerColor} rounded`}
                 animate={isMobileMenuOpen ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
               />
             </div>
@@ -95,7 +110,11 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="md:hidden bg-black border-t border-white/10"
+            className="md:hidden"
+            style={{
+              backgroundColor: '#F3ECE1',
+              borderTop: '1px solid rgba(31, 26, 20, 0.12)',
+            }}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -107,7 +126,8 @@ export default function Navbar() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="block py-2 text-white/80 hover:text-white"
+                    className="block py-2"
+                    style={{ color: 'rgba(31, 26, 20, 0.75)' }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.name}

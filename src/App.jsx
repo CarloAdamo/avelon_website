@@ -1,22 +1,20 @@
 import Navbar from './components/Navbar';
-import Hero from './components/sections/Hero';
-import Services from './components/sections/Services';
+import TrueMeaning from './components/sections/TrueMeaning';
 import CaseStudies from './components/sections/CaseStudies';
-import About from './components/sections/About';
 import Career from './components/sections/Career';
 import Contact from './components/sections/Contact';
 import Footer from './components/Footer';
+import RocketScroll from './components/sections/RocketScroll';
 import { CalendlyProvider } from './context/CalendlyContext';
 
 function App() {
   return (
     <CalendlyProvider>
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen" style={{ backgroundColor: '#F3ECE1' }}>
         <Navbar />
-        <Hero />
-        <Services />
+        <RocketScroll />
+        <TrueMeaning />
         <CaseStudies />
-        <About />
         <Contact />
         <Career />
         <Footer />
