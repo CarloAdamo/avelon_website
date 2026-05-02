@@ -5,6 +5,7 @@ import Career from './components/sections/Career';
 import Contact from './components/sections/Contact';
 import Footer from './components/Footer';
 import RocketScroll from './components/sections/RocketScroll';
+import SectionDivider from './components/ui/SectionDivider';
 import { CalendlyProvider } from './context/CalendlyContext';
 
 function App() {
@@ -15,7 +16,9 @@ function App() {
         <RocketScroll />
         <TrueMeaning />
         <CaseStudies />
+        <SectionDivider variant={0} />
         <Contact />
+        <SectionDivider variant={1} />
         <Career />
         <Footer />
       </div>
