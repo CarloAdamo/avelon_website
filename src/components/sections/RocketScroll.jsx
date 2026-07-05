@@ -6,7 +6,6 @@ export default function RocketScroll() {
   const videoRef = useRef(null);
   const targetTimeRef = useRef(0);
   const [duration, setDuration] = useState(0);
-  const [ready, setReady] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -30,16 +29,13 @@ export default function RocketScroll() {
     const video = videoRef.current;
     if (!video) return;
     const onMeta = () => setDuration(video.duration || 0);
-    const onCanPlay = () => setReady(true);
     video.addEventListener('loadedmetadata', onMeta);
-    video.addEventListener('canplay', onCanPlay);
     const prime = video.play();
     if (prime && typeof prime.then === 'function') {
       prime.then(() => video.pause()).catch(() => {});
     }
     return () => {
       video.removeEventListener('loadedmetadata', onMeta);
-      video.removeEventListener('canplay', onCanPlay);
     };
   }, []);
 
@@ -48,10 +44,13 @@ export default function RocketScroll() {
     const video = videoRef.current;
     if (!video) return;
     let raf;
+    // Threshold of one source frame (24 fps) — seeking more often than the video
+    // has frames just queues redundant decodes and stutters on slower devices.
+    const FRAME = 1 / 24;
     const tick = () => {
       const current = video.currentTime;
       const target = targetTimeRef.current;
-      if (Math.abs(target - current) > 0.01) {
+      if (Math.abs(target - current) > FRAME) {
         video.currentTime = target;
       }
       raf = requestAnimationFrame(tick);
@@ -108,13 +107,12 @@ export default function RocketScroll() {
           <video
             ref={videoRef}
             src="/rocket/rocket-scrub.mp4"
+            poster="/rocket/rocket-poster.webp"
             muted
             playsInline
             preload="auto"
             className="h-[60vh] md:h-[88vh] w-auto"
             style={{
-              opacity: ready ? 1 : 0,
-              transition: 'opacity 0.4s ease',
               // Feather all four edges so any tone mismatch with the section bg dissolves gradually
               // instead of forming a visible seam. Mask is intersected from horizontal + vertical gradients.
               maskImage:

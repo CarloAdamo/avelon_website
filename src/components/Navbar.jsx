@@ -43,7 +43,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.02 }}
           >
             <img
-              src="/avelon-logo.png"
+              src="/avelon-logo.webp"
               alt="Avelon"
               className="h-14 md:h-16"
             />

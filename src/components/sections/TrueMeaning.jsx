@@ -20,7 +20,6 @@ export default function TrueMeaning() {
   const astronautRef = useRef(null);
   const astronautTimeRef = useRef(0);
   const [astronautDuration, setAstronautDuration] = useState(0);
-  const [astronautReady, setAstronautReady] = useState(false);
   const astronautProgress = useTransform(progress, [0.00, 0.22], [0, 1]);
 
   useMotionValueEvent(astronautProgress, 'change', (vp) => {
@@ -28,20 +27,31 @@ export default function TrueMeaning() {
     astronautTimeRef.current = Math.max(0, Math.min(astronautDuration - 0.05, vp * astronautDuration));
   });
 
+  // The section sits far below the fold — don't download the video until the
+  // visitor is within a viewport of reaching it. Until then only the poster shows.
   useEffect(() => {
     const video = astronautRef.current;
-    if (!video) return;
+    const section = sectionRef.current;
+    if (!video || !section) return;
     const onMeta = () => setAstronautDuration(video.duration || 0);
-    const onCanPlay = () => setAstronautReady(true);
     video.addEventListener('loadedmetadata', onMeta);
-    video.addEventListener('canplay', onCanPlay);
-    const prime = video.play();
-    if (prime && typeof prime.then === 'function') {
-      prime.then(() => video.pause()).catch(() => {});
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        observer.disconnect();
+        video.preload = 'auto';
+        video.load();
+        const prime = video.play();
+        if (prime && typeof prime.then === 'function') {
+          prime.then(() => video.pause()).catch(() => {});
+        }
+      },
+      { rootMargin: '100% 0px' }
+    );
+    observer.observe(section);
     return () => {
+      observer.disconnect();
       video.removeEventListener('loadedmetadata', onMeta);
-      video.removeEventListener('canplay', onCanPlay);
     };
   }, []);
 
@@ -50,10 +60,13 @@ export default function TrueMeaning() {
     const video = astronautRef.current;
     if (!video) return;
     let raf;
+    // Threshold of one source frame (24 fps) — seeking more often than the video
+    // has frames just queues redundant decodes and stutters on slower devices.
+    const FRAME = 1 / 24;
     const tick = () => {
       const current = video.currentTime;
       const target = astronautTimeRef.current;
-      if (Math.abs(target - current) > 0.01) {
+      if (Math.abs(target - current) > FRAME) {
         video.currentTime = target;
       }
       raf = requestAnimationFrame(tick);
@@ -196,10 +209,10 @@ export default function TrueMeaning() {
                 <video
                   ref={astronautRef}
                   src="/videos/astronaut-scrub.mp4"
+                  poster="/videos/astronaut-poster.webp"
                   muted
                   playsInline
-                  preload="auto"
-                  style={{ visibility: astronautReady ? 'visible' : 'hidden' }}
+                  preload="none"
                   className="w-full h-full object-contain select-none"
                 />
               </motion.div>
@@ -213,19 +226,19 @@ export default function TrueMeaning() {
                   className="flex h-full"
                   style={{ width: '300%', x: panX }}
                 >
-                  <Panel src="/screens/screen1.png" />
-                  <Panel src="/screens/screen2.png" />
-                  <Panel src="/screens/screen3.png" />
+                  <Panel src="/screens/screen1.webp" />
+                  <Panel src="/screens/screen2.webp" />
+                  <Panel src="/screens/screen3.webp" />
                 </motion.div>
               </motion.div>
 
               {/* Phase 3: flying logos */}
               <motion.div className="absolute inset-0" style={{ opacity: phase3Op }}>
-                <FlyingLogo src="/logos/slack.png"     name="Slack"     x={slackX}     y={slackY} />
-                <FlyingLogo src="/logos/google.png"    name="Google"    x={googleX}    y={googleY} />
-                <FlyingLogo src="/logos/chatgpt.png"   name="ChatGPT"   x={chatgptX}   y={chatgptY} />
-                <FlyingLogo src="/logos/microsoft.png" name="Microsoft" x={microsoftX} y={microsoftY} />
-                <FlyingLogo src="/logos/claude.png"    name="Claude"    x={claudeX}    y={claudeY} />
+                <FlyingLogo src="/logos/slack.webp"     name="Slack"     x={slackX}     y={slackY} />
+                <FlyingLogo src="/logos/google.webp"    name="Google"    x={googleX}    y={googleY} />
+                <FlyingLogo src="/logos/chatgpt.webp"   name="ChatGPT"   x={chatgptX}   y={chatgptY} />
+                <FlyingLogo src="/logos/microsoft.webp" name="Microsoft" x={microsoftX} y={microsoftY} />
+                <FlyingLogo src="/logos/claude.webp"    name="Claude"    x={claudeX}    y={claudeY} />
               </motion.div>
             </motion.div>
           </div>

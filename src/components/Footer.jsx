@@ -22,7 +22,7 @@ export default function Footer() {
             <div>
               <div className="flex items-center mb-5">
                 <img
-                  src="/avelon-logo.png"
+                  src="/avelon-logo.webp"
                   alt="Avelon"
                   className="h-16"
                 />

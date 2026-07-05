@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Claude Code local settings (skills are committed, local settings are not)
+.claude/settings.local.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -27,3 +30,10 @@ dist-ssr
 venv/
 *.pyc
 __pycache__/
+
+# Local working files in repo root (source material, never deployed)
+/*.mp4
+/*.png
+/*.xlsx
+/EXCEL10
+/applications_logos/
