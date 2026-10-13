@@ -20,8 +20,8 @@ function Static() {
       <div className="relative" style={{ height: '60svh' }}>
         <Backdrop {...OFFICE} />
         <SystemBoxes static showNew={0} />
-        <Actor static={{ src: `${A}/guide-draw.webp`, left: '42%' }} alt="The guide, drawing" />
-        <Actor static={{ src: `${A}/max-relieved.webp`, left: '28%' }} alt="Max, relieved" />
+        <Actor static={{ src: `${A}/guide-draw.webp`, left: '44%' }} alt="The guide, drawing" />
+        <Actor static={{ src: `${A}/max-relieved.webp`, left: '30%' }} alt="Max, relieved" />
       </div>
       <Bubble speaker="guide" static>And where something is missing, we <Hand>build</Hand> it.</Bubble>
       <Caption static>A portal, a dashboard, an internal tool. Usually in weeks.</Caption>
@@ -49,8 +49,8 @@ function Stage({ progress }) {
           src={`${V}/guide-draws.mp4`} poster={`${V}/guide-draws.webp`}
           className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: 11 }} />
       )}
-      <Actor progress={progress} alt="The guide, drawing" sequence={[{ from: 0, src: `${A}/guide-draw.webp` }]} x={[[0, 1], ['42%', '42%']]} opacity={fadeIn} zIndex={12} />
-      <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }, { from: 0.75, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['28%', '28%']]} opacity={fadeIn} zIndex={12} />
+      <Actor progress={progress} alt="The guide, drawing" sequence={[{ from: 0, src: `${A}/guide-draw.webp` }]} x={[[0, 1], ['44%', '44%']]} opacity={fadeIn} zIndex={12} />
+      <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }, { from: 0.75, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['30%', '30%']]} opacity={fadeIn} zIndex={12} />
       <Bubble speaker="guide" progress={progress} window={WINDOWS.build} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
         And where something is missing, we <Hand>build</Hand> it.
       </Bubble>

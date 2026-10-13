@@ -16,8 +16,8 @@ function Static() {
       <div className="relative" style={{ height: '60svh' }}>
         <Backdrop {...OFFICE} />
         <SystemBoxes static showNew={0} locks />
-        <Actor static={{ src: `${A}/max-relieved.webp`, left: '28%' }} alt="Max, relieved" />
-        <Actor static={{ src: `${A}/guide-neutral.webp`, left: '42%' }} alt="The guide" />
+        <Actor static={{ src: `${A}/max-relieved.webp`, left: '30%' }} alt="Max, relieved" />
+        <Actor static={{ src: `${A}/guide-neutral.webp`, left: '44%' }} alt="The guide" />
       </div>
       <Bubble speaker="guide" static>Secure and <Hand>transparent</Hand>. You always know where your data goes.</Bubble>
       <Bubble speaker="guide" static>And we <Hand>stay</Hand>. Same people next year.</Bubble>
@@ -32,8 +32,8 @@ export default function Stay({ reduced }) {
         <>
           <Backdrop {...OFFICE} />
           <SystemBoxes progress={progress} appear={[0, 0.001]} connect={[0.001, 0.002]} showNew={0} locks flow />
-          <Actor progress={progress} alt="Max, relieved" sequence={[{ from: 0, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['28%', '28%']]} />
-          <Actor progress={progress} alt="The guide" sequence={[{ from: 0, src: `${A}/guide-neutral.webp` }]} x={[[0, 1], ['42%', '42%']]} />
+          <Actor progress={progress} alt="Max, relieved" sequence={[{ from: 0, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['30%', '30%']]} />
+          <Actor progress={progress} alt="The guide" sequence={[{ from: 0, src: `${A}/guide-neutral.webp` }]} x={[[0, 1], ['44%', '44%']]} />
           <Bubble speaker="guide" progress={progress} window={WINDOWS.secure} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
             Secure and <Hand>transparent</Hand>. You always know where your data goes.
           </Bubble>

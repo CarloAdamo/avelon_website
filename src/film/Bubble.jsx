@@ -5,7 +5,7 @@ import { bubbleOpacity, bubbleRise } from './math';
 const INK = '#1F1A14';
 const PAPER = '#F3ECE1';
 const NAMES = { max: 'Max', guide: 'The guide' };
-const SLOT_TOP = { 1: '4%', 2: '17%' };
+const SLOT_TOP = { 1: '11%', 2: '23%' };
 
 // The classic hand-drawn border: uneven radii make a slightly wobbly outline that stays crisp at any size.
 const SHAPE = {

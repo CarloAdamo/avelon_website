@@ -12,13 +12,13 @@ export const BOXES = [
 
 const DESKTOP = {
   email: [46, 20], files: [78, 30], crm: [88, 54], invoicing: [76, 78],
-  chat: [22, 78], google: [12, 52], microsoft: [22, 28], portal: [64, 86],
+  chat: [11, 78], google: [11, 50], microsoft: [18, 24], portal: [64, 86],
 };
 
-// Mobile: 4×2 grid inside the box band (stage 32%–60%). Columns at 12.5/37.5/62.5/87.5, rows at 39/53.
+// Mobile: 4×2 grid inside the box band (stage 32%–60%). Columns at 12.5/37.5/62.5/87.5, rows at 42/56.
 const MOBILE = {
-  email: [12.5, 39], files: [37.5, 39], crm: [62.5, 39], invoicing: [87.5, 39],
-  chat: [12.5, 53], google: [37.5, 53], microsoft: [62.5, 53], portal: [87.5, 53],
+  email: [12.5, 42], files: [37.5, 42], crm: [62.5, 42], invoicing: [87.5, 42],
+  chat: [12.5, 56], google: [37.5, 56], microsoft: [62.5, 56], portal: [87.5, 56],
 };
 
 export function positions(isDesktop) {

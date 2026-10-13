@@ -72,9 +72,9 @@ The navbar keeps Customer Stories / Contact / Career anchors. Jumps stay instant
 
 ### 3.5 Layout
 
-**Desktop (≥ 768px).** Stage is a 16:9-ish area. Characters stand on a baseline at 88% of stage height. Bubbles anchor above the speaker's head. Boxes sit on a ring around the characters: positions as percentages of stage width/height, clockwise from top: email (46, 20), files (78, 30), CRM (88, 54), invoicing (76, 78), chat (22, 78), Google (12, 52), Microsoft (22, 28), new box (64, 86 → appears to the right of the guide's feet, clear of both characters). In the office scenes Max stands at 28% and the guide at 42%. Nothing in the stage may sit in the top 80px (the fixed navbar) at any viewport of 768px or wider, and no bubble may overlap a box; bubbles are anchored at top 10.5% (captions at 31%) and, if one touches a box, the bubble is nudged, never the box. Adjacency: the ring in that order, plus chords email–invoicing and Microsoft–CRM.
+**Desktop (≥ 768px).** Stage is a 16:9-ish area. Characters stand on a baseline at 88% of stage height. Bubbles anchor above the speaker's head. Boxes sit on a ring around the characters: positions as percentages of stage width/height, clockwise from top: email (46, 20), files (78, 30), CRM (88, 54), invoicing (76, 78), chat (11, 78), Google (11, 50), Microsoft (18, 24), new box (64, 86 → appears to the right of the guide's feet, clear of both characters). In the office scenes Max stands at 30% and the guide at 44%. Nothing in the stage may sit in the top 80px (the fixed navbar) at any viewport of 768px or wider, and no bubble may overlap a box; bubbles are anchored at top 10.5% (captions at 31%) and, if one touches a box, the bubble is nudged, never the box. Adjacency: the ring in that order, plus chords email–invoicing and Microsoft–CRM.
 
-**Mobile (< 768px).** Stage splits into three bands: bubbles (top 32%), boxes (next 28%: a 4×2 grid, 56px boxes, the new box is the eighth slot and stays empty until built), actors (bottom 40%, characters at 70% of their desktop scale). Bubbles use `anchor.mobile.slot` (`1` or `2`) so two bubbles in a scene never collide. Lines are straight segments between grid centres with the same adjacency. The agent path (scene 3) follows the segments. Side gutter 24px. Units are `svh`, never `vh`. Video 1 uses its `srcMobile` variant; video 2 is desktop-only (scene 4).
+**Mobile (< 768px).** Stage splits into three bands: bubbles (top 32%), boxes (next 28%: a 4×2 grid, 56px boxes, the new box is the eighth slot and stays empty until built), actors (bottom 40%, characters at 70% of their desktop scale). Bubbles use `anchor.mobile.slot` (`1` at top 11%, `2` at top 23%, both below the 80px navbar; the grid rows sit at 42% and 56%) so two bubbles in a scene never collide. Lines are straight segments between grid centres with the same adjacency. The agent path (scene 3) follows the segments. Side gutter 24px. Units are `svh`, never `vh`. Video 1 uses its `srcMobile` variant; video 2 is desktop-only (scene 4).
 
 Forms never live inside a sticky stage.
 
@@ -107,7 +107,7 @@ Static: both actors, both bubbles.
 
 ### Scene 2 — Everything you run on, connected (L = 4.5)
 
-Backdrop: empty sketched office. Both characters walk in `[0.0, 0.12]` and stop (Max 28%, guide 42%). `SystemBoxes appear=[0.12, 0.45]`, `connect=[0.50, 0.85]`.
+Backdrop: empty sketched office. Both characters walk in `[0.0, 0.12]` and stop (Max 30%, guide 44%). `SystemBoxes appear=[0.12, 0.45]`, `connect=[0.50, 0.85]`.
 
 - Bubble guide `[0.18, 0.25, 0.48, 0.55]`: "Email, files, CRM, invoicing, chat. We look after ***all*** of it."
 - Bubble guide `[0.58, 0.65, 0.93, 1.0]`: "First we ***connect*** what you already have. One customer, one record, everywhere."
