@@ -1,0 +1,57 @@
+import { describe, it, expect } from 'vitest';
+import {
+  BOXES, positions, EDGES, PORTAL_EDGES, segments, ringPoints, pointAlongPolyline, boxFractions,
+} from './boxesLayout';
+
+describe('boxes', () => {
+  it('has eight boxes with the portal last', () => {
+    expect(BOXES).toHaveLength(8);
+    expect(BOXES[7]).toMatchObject({ id: 'portal', isNew: true });
+  });
+  it('places every box on desktop and on the mobile 4x2 grid', () => {
+    const d = positions(true);
+    expect(d.email).toEqual([50, 14]);
+    expect(d.portal).toEqual([50, 86]);
+    const m = positions(false);
+    expect(Object.keys(m)).toHaveLength(8);
+    const xs = new Set(Object.values(m).map(([x]) => x));
+    const ys = new Set(Object.values(m).map(([, y]) => y));
+    expect(xs.size).toBe(4);
+    expect(ys.size).toBe(2);
+    expect(Math.max(...ys)).toBeLessThanOrEqual(60); // inside the 32%–60% box band
+    expect(Math.min(...ys)).toBeGreaterThanOrEqual(32);
+  });
+});
+
+describe('edges and segments', () => {
+  it('has a 7-ring plus two chords, and two portal edges', () => {
+    expect(EDGES).toHaveLength(9);
+    expect(EDGES).toContainEqual(['email', 'invoicing']);
+    expect(EDGES).toContainEqual(['microsoft', 'crm']);
+    expect(PORTAL_EDGES).toHaveLength(2);
+  });
+  it('resolves segments to coordinates and adds portal edges on demand', () => {
+    expect(segments(true, false)).toHaveLength(9);
+    expect(segments(true, true)).toHaveLength(11);
+    const s = segments(true, false).find((e) => e.from === 'email' && e.to === 'files');
+    expect(s).toMatchObject({ x1: 50, y1: 14, x2: 74, y2: 22 });
+  });
+});
+
+describe('agent path', () => {
+  it('walks the ring and returns to the start', () => {
+    const pts = ringPoints(true);
+    expect(pts).toHaveLength(8);
+    expect(pts[0]).toEqual(pts[7]);
+  });
+  it('interpolates along the polyline', () => {
+    const pts = [[0, 0], [10, 0], [10, 10]];
+    expect(pointAlongPolyline(pts, 0)).toEqual([0, 0]);
+    expect(pointAlongPolyline(pts, 0.5)).toEqual([10, 0]);
+    expect(pointAlongPolyline(pts, 0.75)).toEqual([10, 5]);
+    expect(pointAlongPolyline(pts, 1)).toEqual([10, 10]);
+  });
+  it('reports the fraction at which each point is reached', () => {
+    expect(boxFractions([[0, 0], [10, 0], [10, 10]])).toEqual([0, 0.5, 1]);
+  });
+});
