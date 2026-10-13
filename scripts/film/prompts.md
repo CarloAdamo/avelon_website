@@ -23,11 +23,11 @@ opening frames.
 
 ## Video 2: the guide draws the portal (`guide-draws.mp4`, Build; start frame `frame-build.png`)
 
-Current clip: job `ef2b2bc5-9cd2-4309-80ef-afef0d637be2`, regenerated from a fresh start frame with solid
-lines (the earlier clip, job `9f7488e1-…`, showed the old dashed lines). Same prompt; the first of the two
-regeneration attempts (`95e95094-…`) drew the box on the floor line near Invoicing, the second drew it
-mid-right next to the pencil hand, where the portal sits (59, 58). The prompt's placement wording dates
-from the original run, whose first attempt drew the box upper-middle.
+Current clip: job `1523fef3-80df-41b0-9685-180878f923cc`, regenerated after the four standing guide poses
+were redrawn to match the canon sheet and the walk frames (the earlier cutouts had drifted to a different face).
+Same prompt, first attempt; it draws the box just below and right of the pencil hand, where the portal now sits
+(62, 66). Earlier clips: `ef2b2bc5-…` (solid lines, box at (59, 58)) and `9f7488e1-…` (dashed lines). The
+prompt's placement wording dates from the original run, whose first attempt drew the box upper-middle.
 
 > Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same two characters, boxes and drawing style as the start frame. The taller character in the scarf stretches his pencil arm out and down toward the lower right, and draws a small rounded rectangle low on the wall near the floor, to the right of the two characters, about two thirds of the way across the frame, just above the baseboard and left of the box labelled Invoicing; the pencil line appears stroke by stroke and becomes a small box with a screen, outlined in muted purple. The shorter character watches and smiles. The seven existing boxes and the office stay exactly still. The camera must not move, no zoom. No text, no speech bubbles, no new characters.
 

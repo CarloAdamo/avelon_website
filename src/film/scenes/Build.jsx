@@ -19,7 +19,7 @@ const { L, WINDOWS } = SCENES.build;
 // fitted: content at 0.9869·x − 4.31px, 0.9699·y − 1.46px (residuals under 1.5px, identical first and
 // last frame, so the clip does not drift). CLIP_FIT is the inverse, which maps the clip back onto the
 // capture and so onto the live camera.
-const CLIP_FIT = { transformOrigin: '0 0', transform: 'translate(0.228%, 0.139%) scale(1.0133, 1.0310)' };
+const CLIP_FIT = { transformOrigin: '0 0', transform: 'translate(0.228%, 0.020%) scale(1.0133, 1.0329)' };
 
 function Static() {
   return (

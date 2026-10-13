@@ -11,7 +11,7 @@ describe('boxes', () => {
   it('places every box on desktop and on the mobile 4x2 grid', () => {
     const d = positions(true);
     expect(d.email).toEqual([47, 12]);
-    expect(d.portal).toEqual([59, 58]);
+    expect(d.portal).toEqual([62, 66]);
     const m = positions(false);
     expect(Object.keys(m)).toHaveLength(8);
     const xs = new Set(Object.values(m).map(([x]) => x));
