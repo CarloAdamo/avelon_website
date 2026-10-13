@@ -65,7 +65,7 @@ function Stage({ progress }) {
         style={{ opacity: headOpacity, y: headY }}>
         <div className="mx-auto md:mx-0" style={{ maxWidth: 'min(48vw, 720px)' }}><Headline /></div>
       </motion.div>
-      <Bubble speaker="max" progress={progress} window={WINDOWS.hint} anchor={{ desktop: { left: '62%', top: '12%' }, mobile: { slot: 1 } }}>
+      <Bubble speaker="max" progress={progress} window={WINDOWS.hint} anchor={{ desktop: { left: '62%', top: '16%' }, mobile: { slot: 1 } }}>
         A little <Hand>help</Hand> here?
       </Bubble>
       <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none" style={{ opacity: arrowOpacity }}>

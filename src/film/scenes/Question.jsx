@@ -35,10 +35,10 @@ export default function Question({ reduced }) {
             sequence={[{ from: 0, src: `${A}/guide-walk-a.webp` }, { from: 0.15, src: `${A}/guide-wave.webp` }, { from: 0.5, src: `${A}/guide-neutral.webp` }]}
             walk={{ frames: [`${A}/guide-walk-a.webp`, `${A}/guide-walk-b.webp`], window: [0, 0.15] }}
             x={[[0, 0.15], ['110%', '66%']]} />
-          <Bubble speaker="max" progress={progress} window={WINDOWS.max} anchor={{ desktop: { left: '14%', top: '10%' }, mobile: { slot: 1 } }}>
+          <Bubble speaker="max" progress={progress} window={WINDOWS.max} anchor={{ desktop: { left: '10%', top: '14%' }, mobile: { slot: 1 } }}>
             Our IT partner sorts out the laptops and the Microsoft account. Is that <Hand>it</Hand>?
           </Bubble>
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.guide} anchor={{ desktop: { left: '52%', top: '10%' }, mobile: { slot: 2 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.guide} anchor={{ desktop: { left: '50%', top: '14%' }, mobile: { slot: 2 } }}>
             Laptops are the <Hand>easy</Hand> part. Walk with me.
           </Bubble>
         </>

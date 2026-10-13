@@ -11,8 +11,8 @@ export const BOXES = [
 ];
 
 const DESKTOP = {
-  email: [50, 14], files: [74, 22], crm: [86, 46], invoicing: [76, 72],
-  chat: [24, 72], google: [14, 46], microsoft: [26, 22], portal: [50, 86],
+  email: [46, 20], files: [78, 30], crm: [88, 54], invoicing: [76, 78],
+  chat: [22, 78], google: [12, 52], microsoft: [22, 28], portal: [64, 86],
 };
 
 // Mobile: 4×2 grid inside the box band (stage 32%–60%). Columns at 12.5/37.5/62.5/87.5, rows at 39/53.

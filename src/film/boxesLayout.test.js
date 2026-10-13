@@ -10,8 +10,8 @@ describe('boxes', () => {
   });
   it('places every box on desktop and on the mobile 4x2 grid', () => {
     const d = positions(true);
-    expect(d.email).toEqual([50, 14]);
-    expect(d.portal).toEqual([50, 86]);
+    expect(d.email).toEqual([46, 20]);
+    expect(d.portal).toEqual([64, 86]);
     const m = positions(false);
     expect(Object.keys(m)).toHaveLength(8);
     const xs = new Set(Object.values(m).map(([x]) => x));
@@ -34,7 +34,7 @@ describe('edges and segments', () => {
     expect(segments(true, false)).toHaveLength(9);
     expect(segments(true, true)).toHaveLength(11);
     const s = segments(true, false).find((e) => e.from === 'email' && e.to === 'files');
-    expect(s).toMatchObject({ x1: 50, y1: 14, x2: 74, y2: 22 });
+    expect(s).toMatchObject({ x1: 46, y1: 20, x2: 78, y2: 30 });
   });
 });
 

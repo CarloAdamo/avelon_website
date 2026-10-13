@@ -16,8 +16,8 @@ function Static() {
       <div className="relative" style={{ height: '60svh' }}>
         <Backdrop {...OFFICE} />
         <SystemBoxes static showNew={null} />
-        <Actor static={{ src: `${A}/max-neutral.webp`, left: '34%' }} alt="Max" />
-        <Actor static={{ src: `${A}/guide-point.webp`, left: '50%' }} alt="The guide" />
+        <Actor static={{ src: `${A}/max-neutral.webp`, left: '28%' }} alt="Max" />
+        <Actor static={{ src: `${A}/guide-point.webp`, left: '42%' }} alt="The guide" />
       </div>
       <Bubble speaker="guide" static>Email, files, CRM, invoicing, chat. We look after <Hand>all</Hand> of it.</Bubble>
       <Bubble speaker="guide" static>First we <Hand>connect</Hand> what you already have. One customer, one record, everywhere.</Bubble>
@@ -35,15 +35,15 @@ export default function Connect({ reduced }) {
           <Actor progress={progress} alt="Max"
             sequence={[{ from: 0, src: `${A}/max-walk-a.webp` }, { from: 0.12, src: `${A}/max-neutral.webp` }]}
             walk={{ frames: [`${A}/max-walk-a.webp`, `${A}/max-walk-b.webp`], window: [0, 0.12] }}
-            x={[[0, 0.12], ['-10%', '34%']]} />
+            x={[[0, 0.12], ['-10%', '28%']]} />
           <Actor progress={progress} alt="The guide"
             sequence={[{ from: 0, src: `${A}/guide-walk-a.webp` }, { from: 0.12, src: `${A}/guide-point.webp` }]}
             walk={{ frames: [`${A}/guide-walk-a.webp`, `${A}/guide-walk-b.webp`], window: [0, 0.12] }}
-            x={[[0, 0.12], ['110%', '50%']]} />
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.all} anchor={{ desktop: { left: '54%', top: '8%' }, mobile: { slot: 1 } }}>
+            x={[[0, 0.12], ['110%', '42%']]} />
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.all} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
             Email, files, CRM, invoicing, chat. We look after <Hand>all</Hand> of it.
           </Bubble>
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.connect} anchor={{ desktop: { left: '54%', top: '8%' }, mobile: { slot: 2 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.connect} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 2 } }}>
             First we <Hand>connect</Hand> what you already have. One customer, one record, everywhere.
           </Bubble>
         </>

@@ -19,8 +19,8 @@ function BuildStart() {
     <>
       <Backdrop {...OFFICE} />
       <SystemBoxes static showNew={null} />
-      <Actor static={{ src: `${A}/max-neutral.webp`, left: '34%' }} alt="Max" />
-      <Actor static={{ src: `${A}/guide-draw.webp`, left: '50%' }} alt="The guide" />
+      <Actor static={{ src: `${A}/max-neutral.webp`, left: '28%' }} alt="Max" />
+      <Actor static={{ src: `${A}/guide-draw.webp`, left: '42%' }} alt="The guide" />
     </>
   );
 }
