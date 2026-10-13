@@ -37,3 +37,6 @@ __pycache__/
 /*.xlsx
 /EXCEL10
 /applications_logos/
+
+# Superpowers SDD scratch (ledger, briefs, review packages)
+.superpowers/
