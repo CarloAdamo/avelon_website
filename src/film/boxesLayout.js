@@ -29,7 +29,7 @@ const RING = ['email', 'files', 'crm', 'invoicing', 'chat', 'google', 'microsoft
 
 export const EDGES = [
   ...RING.map((id, i) => [id, RING[(i + 1) % RING.length]]),
-  ['email', 'invoicing'],
+  ['email', 'crm'],
   ['microsoft', 'crm'],
 ];
 

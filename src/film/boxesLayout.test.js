@@ -26,7 +26,7 @@ describe('boxes', () => {
 describe('edges and segments', () => {
   it('has a 7-ring plus two chords, and two portal edges', () => {
     expect(EDGES).toHaveLength(9);
-    expect(EDGES).toContainEqual(['email', 'invoicing']);
+    expect(EDGES).toContainEqual(['email', 'crm']);
     expect(EDGES).toContainEqual(['microsoft', 'crm']);
     expect(PORTAL_EDGES).toHaveLength(2);
   });

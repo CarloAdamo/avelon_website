@@ -41,10 +41,17 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
 
   const boxOpacities = base.map((_, i) => useTransform(p, (v) => (isStatic ? 1 : ramp(appear[0] + i * step, appear[0] + (i + 1) * step, v)))); // eslint-disable-line react-hooks/rules-of-hooks
   // Ring and chord lines draw during `connect`; the two portal lines draw together with the portal box.
-  const lineLengths = segs.map((s, j) => useTransform(p, (v) => { // eslint-disable-line react-hooks/rules-of-hooks
+  // A line grows by moving its end point from (x1, y1) to (x2, y2). (framer's pathLength would set a 1px
+  // dash pattern, which non-scaling-stroke turns into screen-pixel dashes.)
+  const drawn = segs.map((s, j) => useTransform(p, (v) => { // eslint-disable-line react-hooks/rules-of-hooks
     if (isStatic) return 1;
     if (s.from === 'portal') return ramp(showNew, showNew + 0.08, v);
     return ramp(connect[0] + j * cstep, connect[0] + (j + 1) * cstep, v);
+  }));
+  const ends = segs.map((s, j) => ({
+    x2: useTransform(drawn[j], (t) => s.x1 + (s.x2 - s.x1) * t), // eslint-disable-line react-hooks/rules-of-hooks
+    y2: useTransform(drawn[j], (t) => s.y1 + (s.y2 - s.y1) * t), // eslint-disable-line react-hooks/rules-of-hooks
+    opacity: useTransform(drawn[j], (t) => (t > 0 ? 1 : 0)), // eslint-disable-line react-hooks/rules-of-hooks
   }));
   const portalOpacity = useTransform(p, (v) => (!withPortal ? 0 : isStatic ? 1 : ramp(showNew, showNew + 0.05, v)));
   const dash = useTransform(p, (v) => -v * 60);
@@ -59,11 +66,11 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
     <div className="absolute inset-x-0 bottom-0 pointer-events-none" data-boxes style={{ top: isDesktop ? NAV_HEIGHT : 0 }}>
       <svg data-boxes-svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
         {segs.map((s, j) => (
-          <motion.line key={`${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+          <motion.line key={`${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={ends[j].x2} y2={ends[j].y2}
             stroke="rgba(31,26,20,0.55)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round"
-            style={{ pathLength: lineLengths[j] }} />
+            style={{ opacity: ends[j].opacity }} />
         ))}
-        {/* framer's pathLength owns stroke-dasharray, so the dotted flow is a second set of plain lines. */}
+        {/* The dotted flow is a second set of full-length lines on top. */}
         {flow && segs.map((s, j) => (
           <motion.line key={`flow-${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
             stroke={ACCENT} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeDasharray="6 8"
