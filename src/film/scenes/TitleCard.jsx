@@ -54,8 +54,8 @@ function Stage({ progress }) {
       <div className="absolute inset-0 flex justify-center items-end pb-4 md:items-center md:justify-end md:pr-[6vw] md:pb-0">
         <ScrubVideo progress={progress} window={[0, 0.8]} loadPolicy="afterLoad"
           src={`${V}/max-arrives.mp4`} srcMobile={`${V}/max-arrives-mobile.mp4`} poster={`${V}/max-arrives.webp`}
-          className="h-[52svh] md:h-[80svh] w-auto"
-          style={{
+          className="w-full md:w-[52vw] h-auto"
+          style={{ maxHeight: '80svh',
             maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 4%, black 96%, transparent 100%)',
             maskComposite: 'intersect', WebkitMaskComposite: 'source-in',
