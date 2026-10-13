@@ -5,7 +5,7 @@ description: Build, launch and drive the Avelon site to verify changes end-to-en
 
 # Verifying the Avelon website
 
-Vite + React SPA. No tests — verification is driving the real site.
+Vite + React SPA. Unit tests: `npm test` (Vitest). End-to-end verification is driving the real site.
 
 ## Build & serve
 
@@ -27,7 +27,7 @@ Key flows:
   `load` event, then `document.querySelector('[data-scene=title] video').currentTime`
   changes while scrolling 0→0.8.
 - **question / connect / agents / stay**: every `[data-bubble]` reaches opacity > 0.9 at the
-  middle of its hold window (windows are exported as `WINDOWS` from `src/film/scenes/*.jsx`).
+  middle of its hold window (windows live in `SCENES[id].WINDOWS` in `src/film/scenes/windows.js`).
 - **build** (L 3): `/film/video/guide-draws.mp4` is requested only once the scene is within
   one viewport, then scrubs.
 - Reduced motion (`page.emulateMediaFeatures([{name:'prefers-reduced-motion', value:'reduce'}])`):
