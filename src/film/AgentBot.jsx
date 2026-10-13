@@ -3,7 +3,7 @@ import useIsDesktop from './useIsDesktop';
 import { boxFractions, pointAlongPolyline, ringPoints } from './boxesLayout';
 import { ramp } from './math';
 
-const ACCENT = '#6B5B95';
+import { ACCENT } from './constants';
 
 /** A small helper figure that travels the ring of boxes; each box it reaches gets a short ink ring. */
 export default function AgentBot({ progress, travel, src }) {
