@@ -147,7 +147,9 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   - `bubbleOpacity(window, p) -> 0..1`, `bubbleRise(window, p, px = 20) -> number`
   - `holdLength(window) -> number`, `validateWindow(window, L, minHold = 0.8) -> {ok, hold}`, `overlaps(a, b) -> boolean`
   - `pickSequence(sequence, p) -> entry`, `walkFrame(window, p, period = 0.06) -> 0|1|null`, `walkBob(window, p, period = 0.06, amp = 6) -> number`
-  - `shouldSeek(current, target, frame = FRAME) -> boolean`, `clampTime(duration, t) -> number`, `videoTime(window, p, duration) -> number`
+  - `shouldSeek(current, target, frame = FRAME) -> boolean`, `clampTime(duration, t) -> number`, `videoTime(window, p, duration) -> number`, `pickSrc(isDesktop, src, srcMobile) -> string`
+
+Helpers live here and not in component files because `react-refresh/only-export-components` is an error in `eslint.config.js`: a `.jsx` file may export components and primitive constants only.
 
 - [ ] **Step 1: Install Vitest and add the script**
 
@@ -159,8 +161,11 @@ In `package.json` scripts add `"test": "vitest run"`. Create `vitest.config.js`:
 
 ```js
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
+// The React plugin gives the automatic JSX runtime, so .test.jsx files need no React import.
 export default defineConfig({
+  plugins: [react()],
   test: {
     include: ['src/**/*.test.{js,jsx}'],
     environment: 'node',
@@ -260,8 +265,15 @@ describe('video helpers', () => {
     expect(videoTime([0.2, 0.8], 0.0, 5)).toBe(0);
     expect(videoTime([0.2, 0.8], 1.0, 5)).toBeCloseTo(4.95);
   });
+  it('picks the mobile source below the breakpoint and falls back to desktop', () => {
+    expect(pickSrc(true, '/d.mp4', '/m.mp4')).toBe('/d.mp4');
+    expect(pickSrc(false, '/d.mp4', '/m.mp4')).toBe('/m.mp4');
+    expect(pickSrc(false, '/d.mp4', undefined)).toBe('/d.mp4');
+  });
 });
 ```
+
+(Add `pickSrc` to the import list at the top of the test file.)
 
 - [ ] **Step 3: Run the tests to verify they fail**
 
@@ -335,12 +347,16 @@ export function clampTime(duration, t) {
 export function videoTime([a, b], p, duration) {
   return clampTime(duration, ramp(a, b, p) * duration);
 }
+
+export function pickSrc(isDesktop, src, srcMobile) {
+  return isDesktop || !srcMobile ? src : srcMobile;
+}
 ```
 
 - [ ] **Step 5: Run the tests to verify they pass**
 
 Run: `npm test`
-Expected: all green (17 tests).
+Expected: all green (18 tests).
 
 - [ ] **Step 6: Lint and commit**
 
@@ -604,24 +620,24 @@ Expected: FAIL, `Cannot find module './Bubble'`.
 
 - [ ] **Step 3: Implement the three files**
 
-`src/film/useIsDesktop.js`:
+`src/film/useIsDesktop.js` (uses `useSyncExternalStore`, so no `setState` inside an effect, which `react-hooks` v7 flags):
 
 ```js
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 const QUERY = '(min-width: 768px)';
 
+function subscribe(onChange) {
+  const m = window.matchMedia(QUERY);
+  m.addEventListener('change', onChange);
+  return () => m.removeEventListener('change', onChange);
+}
+
+const getSnapshot = () => window.matchMedia(QUERY).matches;
+const getServerSnapshot = () => false;
+
 export default function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
-    const m = window.matchMedia(QUERY);
-    const onChange = (e) => setIsDesktop(e.matches);
-    setIsDesktop(m.matches);
-    m.addEventListener('change', onChange);
-    return () => m.removeEventListener('change', onChange);
-  }, []);
-  return isDesktop;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 ```
 
@@ -734,7 +750,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Create: `src/film/Scene.jsx`, `src/film/Scene.test.jsx`
 
 **Interfaces:**
-- Produces: `<Scene id length reduced staticContent className>{(progress) => …}</Scene>`. Section has `data-scene={id}` and `data-length={length}`. `SPRING` constant exported.
+- Produces: `<Scene id length reduced staticContent className>{(progress) => …}</Scene>`. Section has `data-scene={id}` and `data-length={length}`. `SPRING`, `PAPER`, `INK`, `ACCENT` exported from `src/film/constants.js`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -774,33 +790,28 @@ describe('Scene', () => {
 Run: `npm test`
 Expected: FAIL, `Cannot find module './Scene'`.
 
-- [ ] **Step 3: Implement `src/film/Scene.jsx`**
+- [ ] **Step 3: Implement `src/film/constants.js` and `src/film/Scene.jsx`**
+
+`src/film/constants.js`:
+
+```js
+export const SPRING = { stiffness: 120, damping: 30, mass: 0.4 };
+export const PAPER = '#F3ECE1';
+export const INK = '#1F1A14';
+export const ACCENT = '#6B5B95';
+```
+
+`src/film/Scene.jsx`. The scroll hooks live in an inner component that only mounts in animated mode: framer-motion's `useScroll` throws `Target ref is defined but not hydrated` when its target ref is never attached, which is exactly what the static branch would do.
 
 ```jsx
 import { useRef } from 'react';
 import { useScroll, useSpring } from 'framer-motion';
+import { PAPER, SPRING } from './constants';
 
-export const SPRING = { stiffness: 120, damping: 30, mass: 0.4 };
-const PAPER = '#F3ECE1';
-
-/**
- * A pinned scene. `length` is the scroll distance in viewports while the stage is pinned,
- * so the section is (length + 1) viewports tall. Children receive a spring-smoothed 0..1 progress.
- * When `reduced` is true the scene renders `staticContent` in normal flow instead.
- */
-export default function Scene({ id, length, reduced = false, staticContent = null, className = '', children }) {
+function Pinned({ id, length, className, children }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const progress = useSpring(scrollYProgress, SPRING);
-
-  if (reduced) {
-    return (
-      <section id={id} data-scene={id} data-film-static="true" className={`relative px-6 md:px-[4vw] py-12 ${className}`} style={{ backgroundColor: PAPER }}>
-        <div className="max-w-[1100px] mx-auto">{staticContent}</div>
-      </section>
-    );
-  }
-
   return (
     <section id={id} ref={ref} data-scene={id} data-length={length} className={`relative ${className}`}
       style={{ height: `${(length + 1) * 100}svh`, backgroundColor: PAPER }}>
@@ -809,6 +820,22 @@ export default function Scene({ id, length, reduced = false, staticContent = nul
       </div>
     </section>
   );
+}
+
+/**
+ * A pinned scene. `length` is the scroll distance in viewports while the stage is pinned,
+ * so the section is (length + 1) viewports tall. Children receive a spring-smoothed 0..1 progress.
+ * When `reduced` is true the scene renders `staticContent` in normal flow instead.
+ */
+export default function Scene({ id, length, reduced = false, staticContent = null, className = '', children }) {
+  if (reduced) {
+    return (
+      <section id={id} data-scene={id} data-film-static="true" className={`relative px-6 md:px-[4vw] py-12 ${className}`} style={{ backgroundColor: PAPER }}>
+        <div className="max-w-[1100px] mx-auto">{staticContent}</div>
+      </section>
+    );
+  }
+  return <Pinned id={id} length={length} className={className}>{children}</Pinned>;
 }
 ```
 
@@ -821,7 +848,7 @@ Expected: green.
 
 ```bash
 npm run lint
-git add src/film/Scene.jsx src/film/Scene.test.jsx
+git add src/film/constants.js src/film/Scene.jsx src/film/Scene.test.jsx
 git commit -m "Add film Scene wrapper
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
@@ -836,7 +863,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 **Interfaces:**
 - Produces:
-  - `<Actor progress sequence=[{from, src}] walk={{frames:[a,b], window:[s,e]}} x=[stops, values] y=[stops, values] rotate scale opacity eager height="62%" alt>`; root `<motion.img data-actor>` centred on `left` with `bottom: 12%`. `x` values are CSS lengths/percentages.
+  - `<Actor progress sequence=[{from, src}] walk={{frames:[a,b], window:[s,e]}} x=[stops, values] y=[stops, values] rotate scale opacity eager alt>`; root `<motion.img data-actor>` centred on `left`, standing in the desktop band (`bottom: 12%`, `height: 62%`) or the mobile band (`bottom: 3%`, `height: 34%`). `x` values are CSS lengths/percentages.
   - `<Actor static={{src, left}} />` renders a plain `<img>`.
   - `<Paper />` (tiled paper), `<Backdrop src srcMobile alt />` (16:9 cover, lazy).
 
@@ -909,6 +936,9 @@ function srcFor(sequence, walk, p) {
   return pickSequence(sequence, p).src;
 }
 
+// Desktop: characters stand on a baseline at 88% of the stage, 62% tall. Mobile: the bottom 40% band (spec §3.5).
+const BAND = { desktop: { bottom: '12%', height: '62%' }, mobile: { bottom: '3%', height: '34%' } };
+
 /**
  * A character or prop cutout driven by scene progress.
  * `sequence` picks the image by progress; `walk` alternates two frames inside its window and adds a bob.
@@ -916,18 +946,20 @@ function srcFor(sequence, walk, p) {
  */
 export default function Actor({
   progress, sequence = [], walk, x, y, rotate, scale, opacity, eager = false,
-  height = '62%', alt = '', static: isStatic = null, className = '', zIndex = 10,
+  alt = '', static: isStatic = null, className = '', zIndex = 10,
 }) {
+  const isDesktop = useIsDesktop();
+  const band = isDesktop ? BAND.desktop : BAND.mobile;
   if (isStatic) {
     return (
       <img src={isStatic.src} alt={alt} loading="lazy"
-        style={{ position: 'absolute', bottom: '12%', left: isStatic.left, transform: 'translateX(-50%)', height, width: 'auto' }} />
+        style={{ position: 'absolute', bottom: band.bottom, left: isStatic.left, transform: 'translateX(-50%)', height: band.height, width: 'auto' }} />
     );
   }
-  return <LiveActor {...{ progress, sequence, walk, x, y, rotate, scale, opacity, eager, height, alt, className, zIndex }} />;
+  return <LiveActor {...{ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, alt, className, zIndex }} />;
 }
 
-function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eager, height, alt, className, zIndex }) {
+function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, alt, className, zIndex }) {
   const [src, setSrc] = useState(() => srcFor(sequence, walk, progress.get()));
   useMotionValueEvent(progress, 'change', (p) => {
     const next = srcFor(sequence, walk, p);
@@ -946,10 +978,12 @@ function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eag
   return (
     <motion.img data-actor src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} draggable={false}
       className={`pointer-events-none select-none ${className}`}
-      style={{ position: 'absolute', bottom: '12%', left, x: '-50%', y: yy, rotate: rot, scale: sc, opacity: op, height, width: 'auto', zIndex }} />
+      style={{ position: 'absolute', bottom: band.bottom, left, x: '-50%', y: yy, rotate: rot, scale: sc, opacity: op, height: band.height, width: 'auto', zIndex }} />
   );
 }
 ```
+
+Add `import useIsDesktop from './useIsDesktop';` at the top of `Actor.jsx`. The test's `height="62%"` default is gone; nothing in the test asserts on it.
 
 `src/film/Backdrop.jsx`:
 
@@ -1067,7 +1101,7 @@ describe('scrub loop', () => {
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { motionValue } from 'framer-motion';
-import ScrubVideo, { pickSrc } from './ScrubVideo';
+import ScrubVideo from './ScrubVideo';
 
 describe('ScrubVideo', () => {
   it('renders muted, inline, preload none, poster set and no src before activation', () => {
@@ -1080,11 +1114,6 @@ describe('ScrubVideo', () => {
     expect(html).toContain('preload="none"');
     expect(html).toContain('poster="/film/video/a.webp"');
     expect(html).not.toContain('src="/film/video/a.mp4"');
-  });
-  it('picks the mobile source below the breakpoint and falls back to desktop', () => {
-    expect(pickSrc(true, '/d.mp4', '/m.mp4')).toBe('/d.mp4');
-    expect(pickSrc(false, '/d.mp4', '/m.mp4')).toBe('/m.mp4');
-    expect(pickSrc(false, '/d.mp4', undefined)).toBe('/d.mp4');
   });
 });
 ```
@@ -1142,11 +1171,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, transform, useMotionValueEvent, useTransform } from 'framer-motion';
 import scrubLoop from './scrubLoop';
 import useIsDesktop from './useIsDesktop';
-import { videoTime } from './math';
-
-export function pickSrc(isDesktop, src, srcMobile) {
-  return isDesktop || !srcMobile ? src : srcMobile;
-}
+import { pickSrc, videoTime } from './math';
 
 /**
  * Scroll-scrubbed all-intra video. No bytes are requested until activation:
@@ -1181,7 +1206,10 @@ export default function ScrubVideo({
     const el = videoRef.current;
     if (!el) return undefined;
     if (loadPolicy === 'afterLoad') {
-      if (document.readyState === 'complete') { setActivated(true); return undefined; }
+      if (document.readyState === 'complete') {
+        const t = setTimeout(() => setActivated(true), 0); // never set state synchronously inside an effect
+        return () => clearTimeout(t);
+      }
       const onLoad = () => setActivated(true);
       window.addEventListener('load', onLoad, { once: true });
       return () => window.removeEventListener('load', onLoad);
@@ -1321,12 +1349,10 @@ Expected: FAIL, modules not found.
 ```jsx
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
-import { BOXES, positions, segments } from './boxesLayout';
+import { BOXES, EDGES, positions, segments } from './boxesLayout';
 import { ramp } from './math';
+import { INK, ACCENT, PAPER } from './constants';
 
-const INK = '#1F1A14';
-const ACCENT = '#6B5B95';
-const PAPER = '#F3ECE1';
 const HAND_RADIUS = '255px 15px 225px 15px / 15px 225px 15px 255px';
 
 function Box({ box, x, y, size, opacity, isNew }) {
@@ -1368,22 +1394,32 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   const segs = segments(isDesktop, withPortal);
   const base = BOXES.filter((b) => !b.isNew);
   const step = (appear[1] - appear[0]) / base.length;
-  const cstep = (connect[1] - connect[0]) / segs.length;
+  const cstep = (connect[1] - connect[0]) / EDGES.length;
 
   const boxOpacities = base.map((_, i) => useTransform(p, (v) => (isStatic ? 1 : ramp(appear[0] + i * step, appear[0] + (i + 1) * step, v)))); // eslint-disable-line react-hooks/rules-of-hooks
-  const lineLengths = segs.map((_, j) => useTransform(p, (v) => (isStatic ? 1 : ramp(connect[0] + j * cstep, connect[0] + (j + 1) * cstep, v)))); // eslint-disable-line react-hooks/rules-of-hooks
-  const portalOpacity = useTransform(p, (v) => (isStatic ? 1 : withPortal ? ramp(showNew, showNew + 0.05, v) : 0));
+  // Ring and chord lines draw during `connect`; the two portal lines draw together with the portal box.
+  const lineLengths = segs.map((s, j) => useTransform(p, (v) => { // eslint-disable-line react-hooks/rules-of-hooks
+    if (isStatic) return 1;
+    if (s.from === 'portal') return ramp(showNew, showNew + 0.08, v);
+    return ramp(connect[0] + j * cstep, connect[0] + (j + 1) * cstep, v);
+  }));
+  const portalOpacity = useTransform(p, (v) => (!withPortal ? 0 : isStatic ? 1 : ramp(showNew, showNew + 0.05, v)));
   const dash = useTransform(p, (v) => -v * 60);
-  const portalVisible = isStatic || (withPortal && p.get() >= showNew);
+  const portalVisible = withPortal && (isStatic || p.get() >= showNew);
 
   return (
     <div className="absolute inset-0 pointer-events-none" data-boxes>
       <svg data-boxes-svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
         {segs.map((s, j) => (
           <motion.line key={`${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
-            stroke={flow ? ACCENT : 'rgba(31,26,20,0.55)'} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round"
-            strokeDasharray={flow ? '6 8' : undefined}
-            style={{ pathLength: lineLengths[j], strokeDashoffset: flow ? dash : undefined }} />
+            stroke="rgba(31,26,20,0.55)" strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round"
+            style={{ pathLength: lineLengths[j] }} />
+        ))}
+        {/* framer's pathLength owns stroke-dasharray, so the dotted flow is a second set of plain lines. */}
+        {flow && segs.map((s) => (
+          <motion.line key={`flow-${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+            stroke={ACCENT} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeDasharray="6 8"
+            style={{ strokeDashoffset: dash }} />
         ))}
         {locks && segs.map((s) => <Lock key={`lock-${s.from}-${s.to}`} id={`${s.from}-${s.to}`} x={(s.x1 + s.x2) / 2} y={(s.y1 + s.y2) / 2} />)}
       </svg>
@@ -1567,35 +1603,51 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ### Task 11: Scenes 1, 2, 3 and 5 (no video)
 
 **Files:**
-- Create: `src/film/scenes/Question.jsx`, `src/film/scenes/Connect.jsx`, `src/film/scenes/Agents.jsx`, `src/film/scenes/Stay.jsx`, `src/film/scenes/windows.test.js`, `src/film/Caption.jsx`
+- Create: `src/film/scenes/windows.js`, `src/film/scenes/windows.test.js`, `src/film/scenes/Question.jsx`, `src/film/scenes/Connect.jsx`, `src/film/scenes/Agents.jsx`, `src/film/scenes/Stay.jsx`, `src/film/Caption.jsx`
 
 **Interfaces:**
 - Consumes: `Scene`, `Bubble`, `Hand`, `Actor`, `Paper`, `Backdrop`, `SystemBoxes`, `AgentBot`.
-- Produces: each scene file exports `L` (number), `WINDOWS` (object of bubble windows) and a default component taking `{ reduced }`.
+- Produces: `SCENES` from `src/film/scenes/windows.js` (`{ title, question, connect, agents, build, stay }`, each `{ L, WINDOWS, SHORT? }`), and one default component per scene taking `{ reduced }`. Scene `.jsx` files export only their component (eslint `react-refresh/only-export-components` is an error).
 
-- [ ] **Step 1: Write the failing window test**
+- [ ] **Step 1: Write the windows module and its failing test**
+
+`src/film/scenes/windows.js` (all six scenes, so Task 12 adds nothing here):
+
+```js
+// Scroll length (viewports) and bubble windows [in0, in1, out0, out1] per scene.
+// Bubbles are rendered in the DOM in the same key order as WINDOWS; the verification script relies on that.
+// SHORT lists windows exempt from the 0.8-viewport hold rule (the title-card hint only).
+export const SCENES = {
+  title:    { L: 1.5, WINDOWS: { hint: [0, 0, 0.25, 0.4] }, SHORT: ['hint'] },
+  question: { L: 2.5, WINDOWS: { max: [0.10, 0.18, 0.50, 0.58], guide: [0.58, 0.66, 0.98, 1.0] } },
+  connect:  { L: 3.5, WINDOWS: { all: [0.18, 0.25, 0.48, 0.55], connect: [0.58, 0.65, 0.93, 1.0] } },
+  agents:   { L: 2.5, WINDOWS: { agents: [0.15, 0.23, 0.60, 0.68] } },
+  build:    { L: 2.5, WINDOWS: { build: [0.25, 0.33, 0.70, 0.78] } },
+  stay:     { L: 2.5, WINDOWS: { secure: [0.05, 0.13, 0.45, 0.53], stay: [0.55, 0.63, 0.95, 1.0] } },
+};
+```
 
 `src/film/scenes/windows.test.js`:
 
 ```js
 import { describe, it, expect } from 'vitest';
 import { validateWindow, overlaps } from '../math';
-import * as Question from './Question';
-import * as Connect from './Connect';
-import * as Agents from './Agents';
-import * as Stay from './Stay';
-
-const scenes = { Question, Connect, Agents, Stay };
+import { SCENES } from './windows';
 
 describe('scene windows', () => {
-  for (const [name, scene] of Object.entries(scenes)) {
-    it(`${name}: every bubble holds >= 0.8 viewport and holds never overlap`, () => {
-      const wins = Object.values(scene.WINDOWS);
-      expect(wins.length).toBeGreaterThan(0);
-      for (const w of wins) {
-        const { ok, hold } = validateWindow(w, scene.L);
-        expect({ w, hold, ok }).toMatchObject({ ok: true });
+  it('covers all six scenes', () => {
+    expect(Object.keys(SCENES)).toEqual(['title', 'question', 'connect', 'agents', 'build', 'stay']);
+  });
+  for (const [name, scene] of Object.entries(SCENES)) {
+    it(`${name}: every bubble holds >= 0.8 viewport (unless SHORT) and holds never overlap`, () => {
+      const entries = Object.entries(scene.WINDOWS);
+      expect(entries.length).toBeGreaterThan(0);
+      for (const [key, w] of entries) {
+        const minHold = (scene.SHORT || []).includes(key) ? 0 : 0.8;
+        const { ok, hold } = validateWindow(w, scene.L, minHold);
+        expect({ key, w, hold, ok }).toMatchObject({ ok: true });
       }
+      const wins = entries.map(([, w]) => w);
       for (let i = 0; i < wins.length; i++) for (let j = i + 1; j < wins.length; j++) {
         expect(overlaps(wins[i], wins[j])).toBe(false);
       }
@@ -1607,7 +1659,7 @@ describe('scene windows', () => {
 - [ ] **Step 2: Run to verify it fails**
 
 Run: `npm test`
-Expected: FAIL, modules not found.
+Expected: FAIL, `Cannot find module './windows'`. Then create `windows.js` and run again: green (7 tests). The scene components below are checked by the build and the browser pass.
 
 - [ ] **Step 3: Implement `src/film/Caption.jsx`**
 
@@ -1643,9 +1695,9 @@ import Bubble from '../Bubble';
 import Hand from '../Hand';
 import Actor from '../Actor';
 import { Paper } from '../Backdrop';
+import { SCENES } from './windows';
 
-export const L = 2.5;
-export const WINDOWS = { max: [0.10, 0.18, 0.50, 0.58], guide: [0.58, 0.66, 0.98, 1.0] };
+const { L, WINDOWS } = SCENES.question;
 const A = '/film/actors';
 
 function Static() {
@@ -1697,9 +1749,9 @@ import Hand from '../Hand';
 import Actor from '../Actor';
 import { Backdrop } from '../Backdrop';
 import SystemBoxes from '../SystemBoxes';
+import { SCENES } from './windows';
 
-export const L = 3.5;
-export const WINDOWS = { all: [0.18, 0.25, 0.48, 0.55], connect: [0.58, 0.65, 0.93, 1.0] };
+const { L, WINDOWS } = SCENES.connect;
 const A = '/film/actors';
 const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
 
@@ -1757,9 +1809,9 @@ import Caption from '../Caption';
 import { Backdrop } from '../Backdrop';
 import SystemBoxes from '../SystemBoxes';
 import AgentBot from '../AgentBot';
+import { SCENES } from './windows';
 
-export const L = 2.5;
-export const WINDOWS = { agents: [0.15, 0.23, 0.60, 0.68] };
+const { L, WINDOWS } = SCENES.agents;
 const A = '/film/actors';
 const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
 
@@ -1811,9 +1863,9 @@ import Hand from '../Hand';
 import Actor from '../Actor';
 import { Backdrop } from '../Backdrop';
 import SystemBoxes from '../SystemBoxes';
+import { SCENES } from './windows';
 
-export const L = 2.5;
-export const WINDOWS = { secure: [0.05, 0.13, 0.45, 0.53], stay: [0.55, 0.63, 0.95, 1.0] };
+const { L, WINDOWS } = SCENES.stay;
 const A = '/film/actors';
 const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
 
@@ -1864,7 +1916,7 @@ Expected: green, including the four window checks.
 ```bash
 npm run lint
 git add src/film/Caption.jsx src/film/scenes
-git commit -m "Add film scenes Question, Connect, Agents and Stay
+git commit -m "Add scene windows and film scenes Question, Connect, Agents and Stay
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -1874,33 +1926,17 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ### Task 12: Scenes 0 and 4 (video), `Film`, app integration, removal of the old sections
 
 **Files:**
-- Create: `src/film/scenes/TitleCard.jsx`, `src/film/scenes/Build.jsx`, `src/film/Film.jsx`
-- Modify: `src/App.jsx`, `src/index.css:40-46`, `src/film/scenes/windows.test.js`
+- Create: `src/film/scenes/TitleCard.jsx`, `src/film/scenes/Build.jsx`, `src/film/Film.jsx`, `src/film/CaptureFrame.jsx`
+- Modify: `src/App.jsx`, `src/main.jsx`, `src/index.css:40-46`, `index.html`
 - Delete: `src/components/sections/RocketScroll.jsx`, `src/components/sections/TrueMeaning.jsx`, `public/rocket/`, `public/videos/`, `public/screens/`
 
 **Interfaces:**
-- Consumes: everything from Tasks 4–8 and 11. Video paths (created in Task 13): `/film/video/max-arrives.mp4`, `-mobile.mp4`, `.webp`; `/film/video/guide-draws.mp4`, `-mobile.mp4`, `.webp`. Until Task 13 runs, the posters are temporary copies of `public/film/canon/max-sheet.png` converted to WebP so the page renders.
-- Produces: `<Film />` (reads `useReducedMotion` once and passes `reduced` to every scene).
+- Consumes: everything from Tasks 4–8 and 11. Video paths (created in Task 13): `/film/video/max-arrives.mp4`, `/film/video/max-arrives-mobile.mp4`, `/film/video/max-arrives.webp`; `/film/video/guide-draws.mp4`, `/film/video/guide-draws.webp` (video 2 is desktop-only, see Build). Until Task 13 runs, the posters are temporary copies of the canon sheets converted to WebP so the page renders.
+- Produces: `<Film />` (reads `useReducedMotion` once and passes `reduced` to every scene); the `/capture?scene=title|build` route rendering a 1920×1080 `#capture-stage` used by Task 13 to make video start frames.
 
-- [ ] **Step 1: Extend the window test**
+- [ ] **Step 1: Windows**
 
-Add `TitleCard` and `Build` to `src/film/scenes/windows.test.js`:
-
-```js
-import * as TitleCard from './TitleCard';
-import * as Build from './Build';
-const scenes = { TitleCard, Question, Connect, Agents, Build, Stay };
-```
-
-`TitleCard.WINDOWS.hint` is `[0, 0, 0.25, 0.4]` with hold `0.25 × 1.5 = 0.375` viewport, which is intentionally short: the test must skip the hold check for keys listed in a scene's exported `SHORT = ['hint']`. Change the loop to:
-
-```js
-for (const [key, w] of Object.entries(scene.WINDOWS)) {
-  const minHold = (scene.SHORT || []).includes(key) ? 0 : 0.8;
-  const { ok, hold } = validateWindow(w, scene.L, minHold);
-  expect({ key, w, hold, ok }).toMatchObject({ ok: true });
-}
-```
+`src/film/scenes/windows.js` from Task 11 already defines `title` and `build`; nothing to add. `TitleCard` and `Build` read `SCENES.title` / `SCENES.build`.
 
 - [ ] **Step 2: Temporary posters**
 
@@ -1920,11 +1956,10 @@ import Hand from '../Hand';
 import ScrubVideo from '../ScrubVideo';
 import { Paper } from '../Backdrop';
 import { ramp } from '../math';
+import { INK } from '../constants';
+import { SCENES } from './windows';
 
-export const L = 1.5;
-export const WINDOWS = { hint: [0, 0, 0.25, 0.4] };
-export const SHORT = ['hint'];
-const INK = '#1F1A14';
+const { L, WINDOWS } = SCENES.title;
 const V = '/film/video';
 
 function Headline() {
@@ -1997,6 +2032,8 @@ function Stage({ progress }) {
 
 - [ ] **Step 4: Implement `Build.jsx`**
 
+Video 2 is a full-stage clip captured from the same composition the stage shows (see `CaptureFrame`), rendered `absolute inset-0 object-cover` so the box the guide draws lands where the SVG portal appears; a 0.10 crossfade (video out, portal and actors in) hides small offsets. On mobile the stage is portrait and the 4×2 grid puts the portal elsewhere, so there is no video on mobile: the portal and its two lines draw in at 0.75 while the guide holds the drawing pose.
+
 ```jsx
 import Scene from '../Scene';
 import Bubble from '../Bubble';
@@ -2004,11 +2041,12 @@ import Hand from '../Hand';
 import Actor from '../Actor';
 import Caption from '../Caption';
 import ScrubVideo from '../ScrubVideo';
+import useIsDesktop from '../useIsDesktop';
 import { Backdrop } from '../Backdrop';
 import SystemBoxes from '../SystemBoxes';
+import { SCENES } from './windows';
 
-export const L = 2.5;
-export const WINDOWS = { build: [0.25, 0.33, 0.70, 0.78] };
+const { L, WINDOWS } = SCENES.build;
 const A = '/film/actors';
 const V = '/film/video';
 const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
@@ -2031,28 +2069,86 @@ function Static() {
 export default function Build({ reduced }) {
   return (
     <Scene id="build" length={L} reduced={reduced} staticContent={<Static />}>
-      {(progress) => (
-        <>
-          <Backdrop {...OFFICE} />
-          <SystemBoxes progress={progress} appear={[0, 0.001]} connect={[0.001, 0.002]} showNew={0.75} />
-          <div className="absolute inset-0 flex items-end justify-center" style={{ paddingBottom: '12%' }}>
-            <ScrubVideo progress={progress} window={[0.05, 0.75]} opacity={[[0.75, 0.85], [1, 0]]}
-              src={`${V}/guide-draws.mp4`} srcMobile={`${V}/guide-draws-mobile.mp4`} poster={`${V}/guide-draws.webp`}
-              className="h-[62%] w-auto" />
-          </div>
-          <Actor progress={progress} alt="The guide, drawing" sequence={[{ from: 0, src: `${A}/guide-draw.webp` }]} x={[[0, 1], ['50%', '50%']]} opacity={[[0.7, 0.8], [0, 1]]} />
-          <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }, { from: 0.75, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['34%', '34%']]} opacity={[[0.75, 0.85], [0, 1]]} />
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.build} anchor={{ desktop: { left: '54%', top: '8%' }, mobile: { slot: 1 } }}>
-            And where something is missing, we <Hand>build</Hand> it.
-          </Bubble>
-          <Caption progress={progress} window={WINDOWS.build} anchor={{ left: '54%', top: '26%' }}>
-            A portal, a dashboard, an internal tool. Usually in weeks.
-          </Caption>
-        </>
-      )}
+      {(progress) => <Stage progress={progress} />}
     </Scene>
   );
 }
+
+function Stage({ progress }) {
+  const isDesktop = useIsDesktop();
+  const fadeIn = isDesktop ? [[0.75, 0.85], [0, 1]] : undefined;
+  return (
+    <>
+      <Backdrop {...OFFICE} />
+      <SystemBoxes progress={progress} appear={[0, 0.001]} connect={[0.001, 0.002]} showNew={0.75} />
+      {isDesktop && (
+        <ScrubVideo progress={progress} window={[0.05, 0.75]} opacity={[[0.75, 0.85], [1, 0]]}
+          src={`${V}/guide-draws.mp4`} poster={`${V}/guide-draws.webp`}
+          className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: 11 }} />
+      )}
+      <Actor progress={progress} alt="The guide, drawing" sequence={[{ from: 0, src: `${A}/guide-draw.webp` }]} x={[[0, 1], ['50%', '50%']]} opacity={fadeIn} zIndex={12} />
+      <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }, { from: 0.75, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['34%', '34%']]} opacity={fadeIn} zIndex={12} />
+      <Bubble speaker="guide" progress={progress} window={WINDOWS.build} anchor={{ desktop: { left: '54%', top: '8%' }, mobile: { slot: 1 } }}>
+        And where something is missing, we <Hand>build</Hand> it.
+      </Bubble>
+      <Caption progress={progress} window={WINDOWS.build} anchor={{ left: '54%', top: '26%' }}>
+        A portal, a dashboard, an internal tool. Usually in weeks.
+      </Caption>
+    </>
+  );
+}
+```
+
+- [ ] **Step 4b: Implement `src/film/CaptureFrame.jsx` and its route**
+
+The start frame for each clip is the stage composition without bubbles, captions, headline or video, rendered at a fixed 1920×1080 so Task 13 can screenshot it.
+
+```jsx
+import Actor from './Actor';
+import { Paper, Backdrop } from './Backdrop';
+import SystemBoxes from './SystemBoxes';
+
+const A = '/film/actors';
+const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
+
+function Title() {
+  return (
+    <>
+      <Paper />
+      <Actor static={{ src: `${A}/max-stack.webp`, left: '30%' }} alt="Max" />
+    </>
+  );
+}
+
+function BuildStart() {
+  return (
+    <>
+      <Backdrop {...OFFICE} />
+      <SystemBoxes static showNew={null} />
+      <Actor static={{ src: `${A}/max-neutral.webp`, left: '34%' }} alt="Max" />
+      <Actor static={{ src: `${A}/guide-draw.webp`, left: '50%' }} alt="The guide" />
+    </>
+  );
+}
+
+/** Dev route `/capture?scene=title|build`: a 1920×1080 stage used to screenshot video start frames. */
+export default function CaptureFrame() {
+  const scene = new URLSearchParams(window.location.search).get('scene') || 'title';
+  const Composition = scene === 'build' ? BuildStart : Title;
+  return (
+    <div id="capture-stage" style={{ position: 'relative', width: 1920, height: 1080, overflow: 'hidden', backgroundColor: '#F3ECE1' }}>
+      <Composition />
+    </div>
+  );
+}
+```
+
+In `src/main.jsx` add a lazy route next to `/test`:
+
+```jsx
+const CaptureFrame = lazy(() => import('./film/CaptureFrame.jsx'))
+// inside <Routes>:
+<Route path="/capture" element={<Suspense fallback={null}><CaptureFrame /></Suspense>} />
 ```
 
 - [ ] **Step 5: Implement `Film.jsx` and wire `App.jsx`**
@@ -2152,7 +2248,7 @@ Then with puppeteer-core (scratchpad install, see Task 15 Step 1) or by opening 
 - [ ] **Step 9: Commit**
 
 ```bash
-git add -A src/film src/App.jsx src/index.css index.html public/film/video
+git add -A src/film src/App.jsx src/main.jsx src/index.css index.html public/film/video
 git commit -m "Replace rocket and astronaut sections with the scroll film
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
@@ -2163,56 +2259,46 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ### Task 13: Produce the two video clips
 
 **Files:**
-- Create: `public/film/video/max-arrives.mp4`, `max-arrives-mobile.mp4`, `max-arrives.webp`, `guide-draws.mp4`, `guide-draws-mobile.mp4`, `guide-draws.webp` (replacing the temporary posters)
+- Create: `public/film/video/max-arrives.mp4`, `max-arrives-mobile.mp4`, `max-arrives.webp`, `guide-draws.mp4`, `guide-draws.webp` (replacing the temporary posters; video 2 has no mobile variant)
 
 **Interfaces:**
 - Consumes: the running preview build (Task 12) to capture composited start frames; Higgsfield CLI logged in with the `Private` workspace selected (`higgsfield workspace list`).
 
-- [ ] **Step 1: Capture the start frames from the real stage**
+- [ ] **Step 1: Install puppeteer-core in the scratchpad and capture the start frames**
 
-Scratchpad script `frame.mjs` (uses the puppeteer-core install from Task 15 Step 1; install it now if missing):
+```bash
+S=/private/tmp/claude-501/-Users-cab-avelon-website/e519dae3-cd9d-4840-9a4c-42d21bb03dc4/scratchpad
+mkdir -p $S/pp && cd $S/pp && npm init -y >/dev/null && npm install --no-save puppeteer-core@24.10.0 >/dev/null
+cd /Users/cab/avelon_website && npm run build && (npm run preview -- --port 4173 --strictPort &)
+```
+
+`$S/pp/frame.mjs` screenshots the `/capture` route (Task 12), which renders the start composition at 1920×1080 with no bubbles, headline, captions or video:
 
 ```js
 import puppeteer from 'puppeteer-core';
-const [,, sceneId, progress, out] = process.argv;
+const [,, scene, out] = process.argv;
 const browser = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 const page = await browser.newPage();
 await page.setViewport({ width: 1920, height: 1080 });
-await page.goto('http://localhost:4173/', { waitUntil: 'networkidle0' });
-await page.addStyleTag({ content: 'video, [data-bubble], [data-caption], [data-agent], [data-ping] { visibility: hidden !important; }' });
-const y = await page.evaluate((id, p) => {
-  const s = document.querySelector(`[data-scene="${id}"]`);
-  const L = Number(s.dataset.length);
-  return s.offsetTop + Number(p) * L * window.innerHeight;
-}, sceneId, progress);
-await page.evaluate((y) => window.scrollTo(0, y), y);
-await new Promise((r) => setTimeout(r, 1500));
-const stage = await page.$(`[data-scene="${sceneId}"] > div`);
+await page.goto(`http://localhost:4173/capture?scene=${scene}`, { waitUntil: 'networkidle0' });
+await new Promise((r) => setTimeout(r, 800));
+const stage = await page.$('#capture-stage');
 await stage.screenshot({ path: out });
 await browser.close();
+console.log(out);
 ```
 
 ```bash
-npm run preview -- --port 4173 --strictPort &
-S=/private/tmp/claude-501/-Users-cab-avelon-website/e519dae3-cd9d-4840-9a4c-42d21bb03dc4/scratchpad
-node $S/frame.mjs title 0 $S/frame-title.png
-node $S/frame.mjs build 0.05 $S/frame-build.png
+cd $S/pp && node frame.mjs title frame-title.png && node frame.mjs build frame-build.png
 ```
 
-For `frame-title.png` the video is hidden, so composite Max by hand: overlay `public/film/actors/max-stack.webp` at the video's position with ffmpeg:
-
-```bash
-node_modules/ffmpeg-static/ffmpeg -v error -y -i $S/frame-title.png -i public/film/actors/max-stack.webp \
-  -filter_complex "[1:v]scale=-2:860[m];[0:v][m]overlay=x=W*0.58:y=H*0.88-h" $S/frame-title-composited.png
-```
-
-Read both PNGs: Max must be on paper at the right, the office frame must show the guide in the drawing pose and Max neutral with all seven boxes connected.
+Read both PNGs: `frame-title.png` shows Max with the paper stack on plain paper, left of centre; `frame-build.png` shows the office, the seven boxes connected, Max neutral at 34% and the guide in the drawing pose at 50%, no portal.
 
 - [ ] **Step 2: Generate with Seedance 2.5 (35 credits per attempt, up to three attempts per clip)**
 
 ```bash
-cd $S
-higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-title-composited.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false --wait --wait-timeout 20m --wait-interval 15s --json \
+cd $S/pp
+higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-title.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false --wait --wait-timeout 20m --wait-interval 15s --json \
   --prompt "Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same character and drawing style as the start frame. The founder walks in from the left edge toward the right with a bouncy cartoon walk, carrying a wobbling stack of papers with a laptop on top; two sheets flutter to the ground; he looks worried and glances up. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie." > video-max.json
 
 higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-build.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false --wait --wait-timeout 20m --wait-interval 15s --json \
@@ -2222,8 +2308,10 @@ higgsfield generate create seedance_2_5 --mode omni_reference --start-image fram
 - [ ] **Step 3: Download and check the raw clips**
 
 ```bash
+FF=/Users/cab/avelon_website/node_modules/ffmpeg-static/ffmpeg
+cd $S/pp
 for n in max guide; do url=$(grep -oE 'https://[^" ]+\.mp4[^" ]*' video-$n.json | head -1); curl -sL "$url" -o raw-$n.mp4; \
-  node_modules/ffmpeg-static/ffmpeg -v error -i raw-$n.mp4 -vf "select='not(mod(n\,24))',scale=480:-1,tile=6x1" -frames:v 1 -y raw-$n-frames.png; done
+  $FF -v error -i raw-$n.mp4 -vf "select='not(mod(n\,24))',scale=480:-1,tile=6x1" -frames:v 1 -y raw-$n-frames.png; done
 ```
 
 Read both frame tiles. Accept only if (spec §6.2): characters on-model, uniform cream background, no text, no extra characters, no camera move. Otherwise regenerate with the failing point added to the prompt as a negative ("the camera must not move", "no third character"), up to three attempts.
@@ -2232,22 +2320,32 @@ Read both frame tiles. Accept only if (spec §6.2): characters on-model, uniform
 
 ```bash
 FF=/Users/cab/avelon_website/node_modules/ffmpeg-static/ffmpeg; V=/Users/cab/avelon_website/public/film/video
+cd $S/pp
+# Desktop clips (both), mobile clip (title card only: video 2 is desktop-only), posters from the first frame.
 for pair in "max max-arrives" "guide guide-draws"; do set -- $pair
-  $FF -v error -y -i raw-$1.mp4 -an -c:v libx264 -preset slow -crf 26 -g 1 -pix_fmt yuv420p -movflags +faststart -vf scale=1280:-2 $V/$2.mp4
-  $FF -v error -y -i raw-$1.mp4 -an -c:v libx264 -preset slow -crf 27 -g 1 -pix_fmt yuv420p -movflags +faststart -vf scale=854:-2 $V/$2-mobile.mp4
+  $FF -v error -y -i raw-$1.mp4 -an -c:v libx264 -preset slow -crf 26 -g 1 -pix_fmt yuv420p -movflags +faststart -vf "fps=24,scale=1280:-2" $V/$2.mp4
   $FF -v error -y -i raw-$1.mp4 -frames:v 1 -c:v libwebp -quality 80 $V/$2.webp
 done
+$FF -v error -y -i raw-max.mp4 -an -c:v libx264 -preset slow -crf 27 -g 1 -pix_fmt yuv420p -movflags +faststart -vf "fps=24,scale=854:-2" $V/max-arrives-mobile.mp4
+rm -f $V/guide-draws-mobile.mp4
 ls -la $V
-$FF -hide_banner -i $V/max-arrives.mp4 2>&1 | grep -E "Duration|Video:"
+# All-intra check: every decoded frame must be an I-frame (showinfo prints one line per frame).
+for f in $V/max-arrives.mp4 $V/max-arrives-mobile.mp4 $V/guide-draws.mp4; do
+  total=$($FF -i "$f" -vf showinfo -f null - 2>&1 | grep -c " type:")
+  iframes=$($FF -i "$f" -vf showinfo -f null - 2>&1 | grep -c " type:I ")
+  echo "$(basename $f): $iframes / $total I-frames, $(wc -c < "$f" | tr -d ' ') bytes"
+done
+cd /Users/cab/avelon_website
 ```
 
-Expected: `max-arrives.mp4` and `guide-draws.mp4` ≤ 4 MB, mobile variants ≤ 2 MB, 24 fps, 1280×720 / 854×480. If a desktop clip is over 4 MB, trim to 4 s with `-t 4` before raising CRF above 28. Verify all-intra: `$FF -i $V/max-arrives.mp4 -vf select='eq(pict_type\,I)' -vsync vfr -f null - 2>&1 | grep -c frame` should be close to the total frame count (≥ 95 for 4 s, ≥ 119 for 5 s).
+Expected: `max-arrives.mp4` and `guide-draws.mp4` ≤ 4 MB, `max-arrives-mobile.mp4` ≤ 2 MB, 1280×720 / 854×480, and `I-frames == total` for every file (120 of 120 for a 5 s clip at 24 fps). If a desktop clip is over 4 MB, trim to 4 s with `-t 4` before raising CRF above 28.
 
 - [ ] **Step 5: Smoke and commit**
 
-Rebuild, preview, scroll scenes 0 and 4; videos scrub. Then:
+Rebuild, preview, scroll scenes 0 and 4 on a desktop viewport; both videos scrub. Then:
 
 ```bash
+cd /Users/cab/avelon_website
 git add public/film/video
 git commit -m "Add the two scrubbed film clips
 
@@ -2343,11 +2441,12 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Interfaces:**
 - Consumes: the production build on `http://localhost:4173`, `data-scene`, `data-length`, `data-bubble`, `data-scrub-active`, `data-video-failed`, `data-box` attributes.
 
-- [ ] **Step 1: Install puppeteer-core in the scratchpad and build**
+- [ ] **Step 1: Build and serve**
+
+puppeteer-core was installed in `$S/pp` in Task 13 Step 1; if `$S/pp/node_modules/puppeteer-core` is missing, repeat that install line.
 
 ```bash
 S=/private/tmp/claude-501/-Users-cab-avelon-website/e519dae3-cd9d-4840-9a4c-42d21bb03dc4/scratchpad
-mkdir -p $S/pp && cd $S/pp && npm init -y >/dev/null && npm install --no-save puppeteer-core@24.10.0 >/dev/null
 cd /Users/cab/avelon_website && npm run build && (npm run preview -- --port 4173 --strictPort &)
 ```
 
@@ -2357,7 +2456,7 @@ cd /Users/cab/avelon_website && npm run build && (npm run preview -- --port 4173
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const URL = 'http://localhost:4173/';
+const BASE_URL = 'http://localhost:4173/'; // not `URL`: that would shadow the global constructor used below
 const OUT = new URL('./shots/', import.meta.url).pathname; fs.mkdirSync(OUT, { recursive: true });
 const results = []; const ok = (name, pass, info = '') => { results.push({ name, pass, info }); console.log(`${pass ? 'PASS' : 'FAIL'} ${name} ${info}`); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -2375,7 +2474,7 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
   const page = await browser.newPage(); await page.setViewport({ width: 1280, height: 800 });
   const reqs = []; let loaded = false;
   page.on('response', async (r) => { try { const h = r.headers(); reqs.push({ url: r.url(), bytes: Number(h['content-length'] || 0), afterLoad: loaded }); } catch {} });
-  await page.goto(URL, { waitUntil: 'load' }); loaded = true; await sleep(1500);
+  await page.goto(BASE_URL, { waitUntil: 'load' }); loaded = true; await sleep(1500);
   const before = reqs.filter((r) => !r.afterLoad); const mp4Before = before.filter((r) => r.url.endsWith('.mp4'));
   ok('no mp4 before load', mp4Before.length === 0, `${mp4Before.length}`);
   const budget = before.reduce((a, r) => a + r.bytes, 0);
@@ -2384,26 +2483,34 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
   ok('exactly one mp4 after load', mp4After.length === 1, mp4After.map((r) => r.url.split('/').pop()).join(','));
   ok('video 1 <= 4MB', (mp4After[0]?.bytes ?? 0) <= 4e6, `${((mp4After[0]?.bytes ?? 0) / 1e6).toFixed(2)} MB`);
 
-  for (const [scene, wins] of Object.entries(WINDOWS)) {
-    for (const [key, w] of Object.entries(wins)) {
-      const idx = Object.keys(wins).indexOf(key); // bubbles appear in the DOM in WINDOWS key order
-      await scrollTo(page, scene, (w[1] + w[2]) / 2);
-      const op = await page.evaluate((scene, idx) => { const els = [...document.querySelectorAll(`[data-scene="${scene}"] [data-bubble]`)]; const el = els[idx]; return el ? Number(getComputedStyle(el).opacity) : -1; }, scene, idx);
-      ok(`bubble ${scene}.${key} visible at mid-hold`, op > 0.9, `opacity ${op}`);
-      await page.screenshot({ path: `${OUT}desktop-${scene}-${key}.png` });
-    }
-  }
-  const t0 = await page.evaluate(() => document.querySelector('[data-scene="title"] video')?.currentTime ?? -1);
-  await scrollTo(page, 'title', 0.7);
-  const t1 = await page.evaluate(() => document.querySelector('[data-scene="title"] video')?.currentTime ?? -1);
-  ok('title video scrubs', t1 > t0 + 0.5, `${t0} -> ${t1}`);
+  // Order matters: loading checks before any scroll reaches Build, scrub checks between explicit positions.
+  const vt = (scene) => page.evaluate((s) => document.querySelector(`[data-scene="${s}"] video`)?.currentTime ?? -1, scene);
+  await scrollTo(page, 'title', 0.1); const t0 = await vt('title');
+  await scrollTo(page, 'title', 0.7); const t1 = await vt('title');
+  ok('title video scrubs', t1 > t0 + 0.5, `${t0.toFixed(2)} -> ${t1.toFixed(2)}`);
   const mp4Count = () => reqs.filter((r) => r.url.endsWith('.mp4')).length;
   await scrollTo(page, 'connect', 0.5); ok('video 2 not requested two scenes early', mp4Count() === 1, `${mp4Count()}`);
-  await scrollTo(page, 'build', 0.3); await sleep(1500); ok('video 2 requested near build', mp4Count() === 2, `${mp4Count()}`);
-  const b0 = await page.evaluate(() => document.querySelector('[data-scene="build"] video')?.currentTime ?? -1);
-  await scrollTo(page, 'build', 0.7);
-  const b1 = await page.evaluate(() => document.querySelector('[data-scene="build"] video')?.currentTime ?? -1);
-  ok('build video scrubs', b1 > b0 + 0.5, `${b0} -> ${b1}`);
+
+  for (const [scene, wins] of Object.entries(WINDOWS)) {
+    const keys = Object.keys(wins);
+    const bubbleOpacity = (idx) => page.evaluate((scene, idx) => { const els = [...document.querySelectorAll(`[data-scene="${scene}"] [data-bubble]`)]; const el = els[idx]; return el ? Number(getComputedStyle(el).opacity) : -1; }, scene, idx);
+    for (const [idx, key] of keys.entries()) { // bubbles appear in the DOM in WINDOWS key order
+      const w = wins[key];
+      await scrollTo(page, scene, (w[1] + w[2]) / 2);
+      const op = await bubbleOpacity(idx);
+      ok(`bubble ${scene}.${key} visible at mid-hold`, op > 0.9, `opacity ${op}`);
+      await page.screenshot({ path: `${OUT}desktop-${scene}-${key}.png` });
+      if (idx + 1 < keys.length) { // spec §8: at the end of a hold the next bubble is not yet visible
+        await scrollTo(page, scene, w[2]);
+        const next = await bubbleOpacity(idx + 1);
+        ok(`bubble ${scene}.${keys[idx + 1]} hidden at end of ${key} hold`, next < 0.1, `opacity ${next}`);
+      }
+    }
+  }
+  ok('video 2 requested once build was near', mp4Count() === 2, `${mp4Count()}`);
+  await scrollTo(page, 'build', 0.2); const b0 = await vt('build');
+  await scrollTo(page, 'build', 0.7); const b1 = await vt('build');
+  ok('build video scrubs', b1 > b0 + 0.5, `${b0.toFixed(2)} -> ${b1.toFixed(2)}`);
   // Review focus 5: breakpoint resize mid-scene
   await scrollTo(page, 'connect', 0.6);
   const left1 = await page.evaluate(() => getComputedStyle(document.querySelector('[data-scene="connect"] [data-box="crm"]')).left);
@@ -2418,10 +2525,15 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
   const page = await browser.newPage(); await page.setViewport({ width: 1280, height: 800 });
   const cdp = await page.createCDPSession(); await cdp.send('Network.enable');
   await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 300, downloadThroughput: 400 * 1024, uploadThroughput: 200 * 1024 });
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
-  await scrollTo(page, 'build', 0.5); await sleep(2500);
-  const [ct, dur] = await page.evaluate(() => { const v = document.querySelector('[data-scene="build"] video'); return [v?.currentTime ?? -1, v?.duration ?? 0]; });
-  ok('late-loading video lands on its frame', dur > 0 && ct > dur * 0.4, `t=${ct.toFixed(2)} of ${dur.toFixed(2)}`);
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+  await scrollTo(page, 'build', 0.5);
+  // Wait for metadata, then the frame for p=0.5 (window [0.05, 0.75] -> 64% of duration) must arrive within 2 s.
+  const metaAt = Date.now();
+  let dur = 0; while (!dur && Date.now() - metaAt < 20000) { dur = await page.evaluate(() => document.querySelector('[data-scene="build"] video')?.duration || 0); await sleep(100); }
+  const expected = ((0.5 - 0.05) / (0.75 - 0.05)) * dur;
+  const start = Date.now(); let ct = -1;
+  while (Date.now() - start < 2000) { ct = await page.evaluate(() => document.querySelector('[data-scene="build"] video')?.currentTime ?? -1); if (Math.abs(ct - expected) < 0.3) break; await sleep(100); }
+  ok('late-loading video lands on its frame within 2s', dur > 0 && Math.abs(ct - expected) < 0.3, `t=${ct.toFixed(2)} expected=${expected.toFixed(2)} after ${Date.now() - start}ms`);
   await page.close();
 }
 
@@ -2430,7 +2542,7 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
   const page = await browser.newPage(); await page.setViewport({ width: 1280, height: 800 });
   await page.setRequestInterception(true);
   page.on('request', (r) => (r.url().endsWith('.mp4') ? r.abort() : r.continue()));
-  await page.goto(URL, { waitUntil: 'load' }); await sleep(1500);
+  await page.goto(BASE_URL, { waitUntil: 'load' }); await sleep(1500);
   const failed = await page.$('[data-scene="title"] [data-video-failed="true"]');
   const posterShown = failed ? await failed.evaluate((el) => el.complete && el.naturalWidth > 0) : false;
   ok('poster stays visible when video fails', !!failed && posterShown);
@@ -2440,7 +2552,7 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
 // 4. Direct anchor landing (review focus 3)
 {
   const page = await browser.newPage(); await page.setViewport({ width: 1280, height: 800 });
-  await page.goto(`${URL}#contact`, { waitUntil: 'load' }); await sleep(1500);
+  await page.goto(`${BASE_URL}#contact`, { waitUntil: 'load' }); await sleep(1500);
   const active = await page.$$('[data-scrub-active="true"]');
   ok('no scrub loop when landing on #contact', active.length === 0, `${active.length} active`);
   await page.close();
@@ -2449,7 +2561,7 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
 // 5. Mobile screenshots
 {
   const page = await browser.newPage(); await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
-  await page.goto(URL, { waitUntil: 'load' }); await sleep(1000);
+  await page.goto(BASE_URL, { waitUntil: 'load' }); await sleep(1000);
   for (const scene of ['title', 'question', 'connect', 'agents', 'build', 'stay']) for (const p of [0.2, 0.5, 0.8]) { await scrollTo(page, scene, p); await page.screenshot({ path: `${OUT}mobile-${scene}-${p}.png` }); }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   ok('no horizontal overflow on mobile', !overflow);
@@ -2460,7 +2572,7 @@ const browser = await puppeteer.launch({ executablePath: CHROME, headless: true 
 {
   const page = await browser.newPage(); await page.setViewport({ width: 1280, height: 800 });
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
-  await page.goto(URL, { waitUntil: 'load' }); await sleep(1000);
+  await page.goto(BASE_URL, { waitUntil: 'load' }); await sleep(1000);
   const sticky = await page.evaluate(() => [...document.querySelectorAll('*')].filter((e) => getComputedStyle(e).position === 'sticky').length);
   const bubbles = await page.evaluate(() => [...document.querySelectorAll('[data-bubble]')].map((e) => Number(getComputedStyle(e).opacity)));
   const vh = await page.evaluate(() => document.documentElement.scrollHeight / window.innerHeight);
@@ -2477,16 +2589,13 @@ console.log(`\n${results.length - fails.length}/${results.length} passed`);
 process.exit(fails.length ? 1 : 0);
 ```
 
-`windows.json` is generated from the scene files so the script and the code never drift:
+`windows.json` is generated from `src/film/scenes/windows.js` (plain ESM, importable by node) so the script and the code never drift:
 
 ```bash
 cd /Users/cab/avelon_website && node --input-type=module -e "
+const { SCENES } = await import('./src/film/scenes/windows.js');
 const fs = await import('node:fs');
-const out = {};
-for (const [id, file] of [['title','TitleCard'],['question','Question'],['connect','Connect'],['agents','Agents'],['build','Build'],['stay','Stay']]) {
-  const src = fs.readFileSync('src/film/scenes/'+file+'.jsx','utf8');
-  const m = src.match(/export const WINDOWS = (\{[^}]*\})/); out[id] = Function('return '+m[1])();
-}
+const out = Object.fromEntries(Object.entries(SCENES).map(([id, s]) => [id, s.WINDOWS]));
 fs.writeFileSync('$S/pp/windows.json', JSON.stringify(out, null, 2)); console.log(out);
 "
 ```

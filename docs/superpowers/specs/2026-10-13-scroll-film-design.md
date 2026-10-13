@@ -74,7 +74,7 @@ The navbar keeps Customer Stories / Contact / Career anchors. Jumps stay instant
 
 **Desktop (≥ 768px).** Stage is a 16:9-ish area. Characters stand on a baseline at 88% of stage height. Bubbles anchor above the speaker's head. Boxes sit on a ring around the characters: positions as percentages of stage width/height, clockwise from top: email (50, 14), files (74, 22), CRM (86, 46), invoicing (76, 72), chat (24, 72), Google (14, 46), Microsoft (26, 22), new box (50, 86 → appears between the characters' feet and the bottom edge). Adjacency: the ring in that order, plus chords email–invoicing and Microsoft–CRM.
 
-**Mobile (< 768px).** Stage splits into three bands: bubbles (top 32%), boxes (next 28%: a 4×2 grid, 56px boxes, the new box is the eighth slot and stays empty until built), actors (bottom 40%, characters at 70% of their desktop scale). Bubbles use `anchor.mobile.slot` (`1` or `2`) so two bubbles in a scene never collide. Lines are straight segments between grid centres with the same adjacency. The agent path (scene 3) follows the segments. Side gutter 24px. Units are `svh`, never `vh`.
+**Mobile (< 768px).** Stage splits into three bands: bubbles (top 32%), boxes (next 28%: a 4×2 grid, 56px boxes, the new box is the eighth slot and stays empty until built), actors (bottom 40%, characters at 70% of their desktop scale). Bubbles use `anchor.mobile.slot` (`1` or `2`) so two bubbles in a scene never collide. Lines are straight segments between grid centres with the same adjacency. The agent path (scene 3) follows the segments. Side gutter 24px. Units are `svh`, never `vh`. Video 1 uses its `srcMobile` variant; video 2 is desktop-only (scene 4).
 
 Forms never live inside a sticky stage.
 
@@ -125,7 +125,7 @@ Static: office, boxes, agent at the midpoint of the path, bubble, caption.
 
 ### Scene 4 — Build (L = 2.5)
 
-Office. **Video 2** (`nearViewport`): the guide draws a new box in the air with the pencil and it becomes a box with a small screen, scrubbed over `[0.05, 0.75]`. The SVG new box is hidden until 0.75, then `showNew` places it so the video's drawn box and the SVG box coincide; the video fades out `[0.75, 0.85]`. Max `max-neutral` until 0.75, `max-relieved` after.
+Office. **Video 2** (`nearViewport`, desktop only): the guide draws a new box in the air with the pencil and it becomes a box with a small screen, scrubbed over `[0.05, 0.75]`. The clip is captured from the same composition the stage shows (office, boxes, both characters at their stage positions, 1920×1080) and rendered full-stage with `object-fit: cover`, so the drawn box lands where the SVG portal appears at `(50, 86)`. The SVG new box and its two lines are hidden until 0.75, then draw in while the video fades out `[0.75, 0.85]`; the crossfade hides small offsets. Max `max-neutral` until 0.75, `max-relieved` after. On mobile (< 768px) there is no video: the guide holds the drawing pose and the portal box plus its two lines draw in at 0.75 in the 4×2 grid.
 
 - Bubble guide `[0.25, 0.33, 0.70, 0.78]`: "And where something is missing, we ***build*** it."
 - Caption: "A portal, a dashboard, an internal tool. Usually in weeks."
@@ -171,12 +171,12 @@ Prompt invariants for every image: "Hand-drawn pencil sketch on cream paper #F3E
 
 ### 6.2 Videos (Higgsfield, Ultra plan)
 
-Two clips, both image-to-video from a composited start frame: the relevant cutouts placed on the backdrop with the stage's desktop layout, rendered by a one-off HTML page and captured with puppeteer at 1920×1080.
+Two clips, both image-to-video from a composited start frame: the relevant cutouts placed on the backdrop with the stage's desktop layout, rendered by the app's `/capture?scene=title|build` route and captured with puppeteer at 1920×1080.
 
-| Clip | Start frame | Model | Length |
-|---|---|---|---|
-| `video/max-arrives` | `max-stack` on paper, left third | the better of Seedance 2.5 / Kling 3.0 Turbo in the test | 5 s |
-| `video/guide-draws` | `guide-draw` + `max-neutral` on office, boxes connected | same | 5 s |
+| Clip | Start frame | Model | Length | Variants |
+|---|---|---|---|---|
+| `video/max-arrives` | `max-stack` on paper, left of centre | Seedance 2.5 (chosen in the model test) | 5 s | desktop 1280×720 + mobile 854×480 |
+| `video/guide-draws` | `guide-draw` + `max-neutral` on office, boxes connected, no portal | same | 5 s | desktop only |
 
 Command: `higgsfield generate create <model> [--mode omni_reference] --start-image <frame.png> --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false --prompt '<motion prompt>' --wait --json`. Download the result URL, then re-encode:
 
