@@ -1,4 +1,5 @@
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
 import { BOXES, EDGES, positions, segments } from './boxesLayout';
 import { ramp } from './math';
@@ -18,15 +19,6 @@ function Box({ box, x, y, size, opacity, isNew }) {
         ? <img src={box.logo} alt={box.label} loading="lazy" style={{ width: '46%', height: '46%', objectFit: 'contain' }} />
         : <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, color: isNew ? ACCENT : INK, fontSize: size > 80 ? '0.95rem' : '0.6rem' }}>{box.label}</span>}
     </motion.div>
-  );
-}
-
-function Lock({ x, y, id }) {
-  return (
-    <g data-lock={id} transform={`translate(${x} ${y})`}>
-      <rect x="-1.1" y="-0.6" width="2.2" height="1.8" rx="0.3" fill={PAPER} stroke={INK} strokeWidth="0.25" vectorEffect="non-scaling-stroke" />
-      <path d="M -0.6 -0.6 V -1.2 A 0.6 0.6 0 0 1 0.6 -1.2 V -0.6" fill="none" stroke={INK} strokeWidth="0.25" vectorEffect="non-scaling-stroke" />
-    </g>
   );
 }
 
@@ -56,7 +48,12 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   }));
   const portalOpacity = useTransform(p, (v) => (!withPortal ? 0 : isStatic ? 1 : ramp(showNew, showNew + 0.05, v)));
   const dash = useTransform(p, (v) => -v * 60);
-  const portalVisible = withPortal && (isStatic || p.get() >= showNew);
+  const flowOpacities = segs.map((s) => useTransform(p, (v) => (s.from === 'portal' ? ramp(showNew, showNew + 0.08, v) : 1))); // eslint-disable-line react-hooks/rules-of-hooks
+  const [portalVisible, setPortalVisible] = useState(() => withPortal && (isStatic || p.get() >= showNew));
+  useMotionValueEvent(p, 'change', (v) => {
+    const next = withPortal && (isStatic || v >= showNew);
+    if (next !== portalVisible) setPortalVisible(next);
+  });
 
   return (
     <div className="absolute inset-0 pointer-events-none" data-boxes>
@@ -67,13 +64,21 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
             style={{ pathLength: lineLengths[j] }} />
         ))}
         {/* framer's pathLength owns stroke-dasharray, so the dotted flow is a second set of plain lines. */}
-        {flow && segs.map((s) => (
+        {flow && segs.map((s, j) => (
           <motion.line key={`flow-${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
             stroke={ACCENT} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeDasharray="6 8"
-            style={{ strokeDashoffset: dash }} />
+            style={{ strokeDashoffset: dash, opacity: flowOpacities[j] }} />
         ))}
-        {locks && segs.map((s) => <Lock key={`lock-${s.from}-${s.to}`} id={`${s.from}-${s.to}`} x={(s.x1 + s.x2) / 2} y={(s.y1 + s.y2) / 2} />)}
       </svg>
+      {locks && segs.map((s) => (
+        <span key={`lock-${s.from}-${s.to}`} data-lock={`${s.from}-${s.to}`} className="absolute pointer-events-none"
+          style={{ left: `${(s.x1 + s.x2) / 2}%`, top: `${(s.y1 + s.y2) / 2}%`, transform: 'translate(-50%,-50%)' }}>
+          <svg viewBox="0 0 20 22" width="18" height="20" aria-hidden="true">
+            <rect x="3" y="9" width="14" height="11" rx="2" fill={PAPER} stroke={INK} strokeWidth="1.5" />
+            <path d="M 6 9 V 6 A 4 4 0 0 1 14 6 V 9" fill="none" stroke={INK} strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      ))}
       {base.map((box, i) => <Box key={box.id} box={box} x={pos[box.id][0]} y={pos[box.id][1]} size={size} opacity={boxOpacities[i]} />)}
       <span data-portal-visible={portalVisible ? 'true' : 'false'} hidden />
       <Box box={BOXES[7]} x={pos.portal[0]} y={pos.portal[1]} size={size} opacity={portalOpacity} isNew />
