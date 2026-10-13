@@ -3,7 +3,7 @@ import { motion, useMotionValue, useMotionValueEvent, useTransform } from 'frame
 import useIsDesktop from './useIsDesktop';
 import { BOXES, EDGES, positions, segments } from './boxesLayout';
 import { ramp } from './math';
-import { INK, ACCENT, PAPER } from './constants';
+import { INK, ACCENT, PAPER, NAV_HEIGHT } from './constants';
 
 const HAND_RADIUS = '255px 15px 225px 15px / 15px 225px 15px 255px';
 
@@ -56,7 +56,7 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   });
 
   return (
-    <div className="absolute inset-0 pointer-events-none" data-boxes>
+    <div className="absolute inset-x-0 bottom-0 pointer-events-none" data-boxes style={{ top: isDesktop ? NAV_HEIGHT : 0 }}>
       <svg data-boxes-svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
         {segs.map((s, j) => (
           <motion.line key={`${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}

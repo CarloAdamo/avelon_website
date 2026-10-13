@@ -13,7 +13,7 @@ const scenes = [
   ['question', Question, ['Is that', 'Walk with me']],
   ['connect', Connect, ['We look after', 'One customer, one record, everywhere']],
   ['agents', Agents, ['AI', 'write the first draft']],
-  ['build', Build, ['we', 'Usually in weeks']],
+  ['build', Build, ['missing', 'Usually in weeks']],
   ['stay', Stay, ['where your data goes', 'Same people next year']],
 ];
 

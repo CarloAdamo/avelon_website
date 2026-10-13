@@ -25,7 +25,7 @@ describe('Bubble', () => {
     );
     expect(html).toContain('data-bubble="max"');
     expect(html).toContain('position:absolute');
-    expect(html).toContain('top:23%');
+    expect(html).toContain('top:max(23%, 92px)');
     expect(html).toContain('opacity:1');
   });
 });

@@ -1,11 +1,13 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
 import { bubbleOpacity, bubbleRise } from './math';
+import { NAV_HEIGHT } from './constants';
 
 const INK = '#1F1A14';
 const PAPER = '#F3ECE1';
 const NAMES = { max: 'Max', guide: 'The guide' };
 const SLOT_TOP = { 1: '11%', 2: '23%' };
+const CLEAR = NAV_HEIGHT + 12; // bubbles never sit closer than this to the top of the stage
 
 // The classic hand-drawn border: uneven radii make a slightly wobbly outline that stays crisp at any size.
 const SHAPE = {
@@ -52,8 +54,8 @@ export default function Bubble({ speaker, anchor, progress, window: win, static:
   }
 
   const position = isDesktop
-    ? { left: anchor.desktop.left, top: anchor.desktop.top }
-    : { left: '6%', right: '6%', top: SLOT_TOP[anchor.mobile.slot] };
+    ? { left: anchor.desktop.left, top: `max(${anchor.desktop.top}, ${CLEAR}px)` }
+    : { left: '6%', right: '6%', top: `max(${anchor.mobile.top ?? SLOT_TOP[anchor.mobile.slot]}, ${CLEAR}px)` };
 
   return (
     <motion.div data-bubble={speaker} className="z-20 pointer-events-none"

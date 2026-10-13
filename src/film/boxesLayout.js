@@ -11,7 +11,7 @@ export const BOXES = [
 ];
 
 const DESKTOP = {
-  email: [46, 20], files: [78, 30], crm: [88, 54], invoicing: [76, 78],
+  email: [47, 12], files: [78, 30], crm: [88, 54], invoicing: [76, 78],
   chat: [11, 78], google: [11, 50], microsoft: [18, 24], portal: [64, 86],
 };
 

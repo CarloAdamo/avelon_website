@@ -1,6 +1,7 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
 import { bubbleOpacity } from './math';
+import { NAV_HEIGHT } from './constants';
 
 /**
  * Small Inter line shown under a bubble, sharing its window.
@@ -12,7 +13,10 @@ export default function Caption({ progress, window: win, anchor, static: isStati
   const opacity = useTransform(progress ?? fallback, (p) => (win ? bubbleOpacity(win, p) : 1));
   const style = { color: 'rgba(31,26,20,0.7)', fontFamily: 'var(--font-sans)', fontSize: 'clamp(0.9rem, 1.05vw, 1.1rem)', maxWidth: '40ch' };
   if (isStatic) return <p data-caption style={{ ...style, margin: '0.25rem 0 1rem' }}>{children}</p>;
-  const pos = isDesktop ? anchor : { left: '6%', right: '6%', top: '23%', textAlign: 'center' };
+  const clear = NAV_HEIGHT + 12;
+  const pos = isDesktop
+    ? { ...anchor, top: `max(${anchor.top}, ${clear}px)` }
+    : { left: '6%', right: '6%', top: `max(23%, ${clear}px)`, textAlign: 'center' };
   return (
     <motion.p data-caption className="absolute z-20 pointer-events-none" style={{ ...style, ...pos, opacity }}>{children}</motion.p>
   );
