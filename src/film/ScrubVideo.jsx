@@ -58,16 +58,19 @@ export default function ScrubVideo({
     const el = videoRef.current;
     if (!el) return undefined;
     const chosen = pickSrc(isDesktop, src, srcMobile);
-    if (el.getAttribute('src') === chosen) return undefined;
     const onMeta = () => { durationRef.current = el.duration || 0; recompute(); };
     const onError = () => { setFailed(true); if (entryRef.current) scrubLoop.unregister(entryRef.current); };
     el.addEventListener('loadedmetadata', onMeta);
     el.addEventListener('error', onError);
-    el.preload = 'auto';
-    el.src = chosen;
-    el.load();
-    const prime = el.play();
-    if (prime && typeof prime.then === 'function') prime.then(() => el.pause()).catch(() => {});
+    if (el.getAttribute('src') === chosen) {
+      if (el.duration > 0) onMeta(); // metadata already arrived before this effect re-ran
+    } else {
+      el.preload = 'auto';
+      el.src = chosen;
+      el.load();
+      const prime = el.play();
+      if (prime && typeof prime.then === 'function') prime.then(() => el.pause()).catch(() => {});
+    }
     return () => {
       el.removeEventListener('loadedmetadata', onMeta);
       el.removeEventListener('error', onError);
@@ -91,12 +94,12 @@ export default function ScrubVideo({
   }, [activated, failed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (failed) {
-    return <img data-video-failed="true" src={poster} alt="" className={className} style={style} />;
+    return <motion.img data-video-failed="true" src={poster} alt="" className={className} style={{ ...style, opacity: op }} />;
   }
 
   return (
     <motion.video ref={videoRef} poster={poster} muted playsInline preload="none"
-      data-scrub-active={active ? 'true' : 'false'}
+      data-scrub-active={active ? 'true' : undefined}
       className={className} style={{ ...style, opacity: op }} />
   );
 }
