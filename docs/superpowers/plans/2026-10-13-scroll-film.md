@@ -2282,7 +2282,7 @@ const [,, scene, out] = process.argv;
 const browser = await puppeteer.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 const page = await browser.newPage();
 await page.setViewport({ width: 1920, height: 1080 });
-await page.goto(`http://localhost:4173/capture?scene=${scene}`, { waitUntil: 'networkidle0' });
+await page.goto(`http://localhost:5173/capture?scene=${scene}`, { waitUntil: 'networkidle0' }); // dev server only (later: scripts/film/frame.mjs)
 await new Promise((r) => setTimeout(r, 800));
 const stage = await page.$('#capture-stage');
 await stage.screenshot({ path: out });

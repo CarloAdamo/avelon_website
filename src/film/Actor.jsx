@@ -19,7 +19,8 @@ function srcFor(sequence, walk, p) {
   return pickSequence(sequence, p).src;
 }
 
-// Desktop: characters stand on a baseline at 88% of the stage, 62% tall. Mobile: the bottom 40% band (spec §3.5).
+// Desktop: characters stand on a baseline at 88% of their container (the camera in office scenes), 62% tall.
+// Mobile: the bottom 40% band of the stage (spec §3.5).
 const BAND = { desktop: { bottom: '12%', height: '62%' }, mobile: { bottom: '3%', height: '34%' } };
 
 /**
@@ -39,10 +40,11 @@ export default function Actor({
         style={{ position: 'absolute', bottom: band.bottom, left: isStatic.left, transform: 'translateX(-50%)', height: band.height, width: 'auto' }} />
     );
   }
-  return <LiveActor {...{ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, alt, className, zIndex }} />;
+  // Pinned mode is decorative: the bubbles carry the story, so the image gets an empty alt.
+  return <LiveActor {...{ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, className, zIndex }} />;
 }
 
-function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, alt, className, zIndex }) {
+function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eager, band, className, zIndex }) {
   const [src, setSrc] = useState(() => srcFor(sequence, walk, progress.get()));
   useMotionValueEvent(progress, 'change', (p) => {
     const next = srcFor(sequence, walk, p);
@@ -59,7 +61,7 @@ function LiveActor({ progress, sequence, walk, x, y, rotate, scale, opacity, eag
   const sc = useTransform(progress, (p) => sf(p));
   const op = useTransform(progress, (p) => of(p));
   return (
-    <motion.img data-actor src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} draggable={false}
+    <motion.img data-actor src={src} alt="" loading={eager ? 'eager' : 'lazy'} draggable={false}
       className={`pointer-events-none select-none ${className}`}
       style={{ position: 'absolute', bottom: band.bottom, left, x: '-50%', y: yy, rotate: rot, scale: sc, opacity: op, height: band.height, width: 'auto', zIndex }} />
   );

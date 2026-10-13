@@ -29,10 +29,23 @@ Key flows:
 - **question / connect / agents / stay**: every `[data-bubble]` reaches opacity > 0.9 at the
   middle of its hold window (windows live in `SCENES[id].WINDOWS` in `src/film/scenes/windows.js`).
 - **build** (L 3): `/film/video/guide-draws.mp4` is requested only once the scene is within
-  one viewport, then scrubs.
+  one viewport, then scrubs. On desktop the office scenes sit in a 16:9 `[data-camera]`; at the
+  crossfade (p 0.74 → 0.86) the live boxes must sit on the clip's boxes at any viewport.
 - Reduced motion (`page.emulateMediaFeatures([{name:'prefers-reduced-motion', value:'reduce'}])`):
   no `position: sticky`, all bubbles visible, page shorter than 12 viewports.
 - **/test**: lazy Spline route still 200s without bloating `/`.
+
+## Film clip start frames
+
+The `/capture?scene=title|build` route (a 1920×1080 `#capture-stage`, the office camera filling it) exists
+only under `npm run dev`; production builds do not ship it. To recapture a start frame:
+
+```bash
+npm run dev                                         # http://localhost:5173, run in background
+node scripts/film/frame.mjs build frame-build.png   # needs puppeteer-core, see "Drive it"
+```
+
+The Seedance motion prompts for both clips are in `scripts/film/prompts.md`.
 
 ## Gotchas
 

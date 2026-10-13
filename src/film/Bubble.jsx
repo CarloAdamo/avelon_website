@@ -1,10 +1,8 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
 import { bubbleOpacity, bubbleRise } from './math';
-import { NAV_HEIGHT } from './constants';
+import { INK, PAPER, NAV_HEIGHT } from './constants';
 
-const INK = '#1F1A14';
-const PAPER = '#F3ECE1';
 const NAMES = { max: 'Max', guide: 'The guide' };
 const SLOT_TOP = { 1: '11%', 2: '23%' };
 const CLEAR = NAV_HEIGHT + 12; // bubbles never sit closer than this to the top of the stage

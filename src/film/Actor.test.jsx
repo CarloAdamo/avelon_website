@@ -12,6 +12,11 @@ describe('Actor', () => {
     expect(html).toContain('loading="lazy"');
     expect(html).toContain('data-actor');
   });
+  it('is decorative in pinned mode (the bubbles carry the story)', () => {
+    const html = renderToStaticMarkup(<Actor progress={motionValue(0)} sequence={seq} alt="Max" />);
+    expect(html).toContain('alt=""');
+    expect(html).not.toContain('alt="Max"');
+  });
   it('loads eagerly when asked', () => {
     const html = renderToStaticMarkup(<Actor progress={motionValue(0)} sequence={seq} eager />);
     expect(html).toContain('loading="eager"');

@@ -1,4 +1,4 @@
-export const ACCENT = '#6B5B95';
+import { ACCENT } from './constants';
 
 export default function Hand({ children }) {
   return (

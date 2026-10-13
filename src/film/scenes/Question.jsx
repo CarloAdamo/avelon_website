@@ -3,10 +3,10 @@ import Bubble from '../Bubble';
 import Hand from '../Hand';
 import Actor from '../Actor';
 import { Paper } from '../Backdrop';
+import { A } from '../assets';
 import { SCENES } from './windows';
 
 const { L, WINDOWS } = SCENES.question;
-const A = '/film/actors';
 
 function Static() {
   return (

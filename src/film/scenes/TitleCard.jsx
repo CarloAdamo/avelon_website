@@ -7,10 +7,12 @@ import ScrubVideo from '../ScrubVideo';
 import { Paper } from '../Backdrop';
 import { ramp } from '../math';
 import { INK } from '../constants';
+import { A, V } from '../assets';
 import { SCENES } from './windows';
 
 const { L, WINDOWS } = SCENES.title;
-const V = '/film/video';
+// Mobile: the hint sits just above the video band (full-width 16:9 clip, 1rem from the bottom; ~5.5rem of bubble and tail).
+const MOBILE_HINT_TOP = 'calc(100% - 1rem - 56.25vw - 5.5rem)';
 
 function Headline() {
   return (
@@ -20,7 +22,7 @@ function Headline() {
         <span className="block">digital partner</span>
         <span className="block">for the AI era.</span>
       </h1>
-      <p className="mt-4 md:mt-6 leading-relaxed hidden sm:block" style={{ color: INK, opacity: 0.7, fontSize: 'clamp(0.95rem, 1.05vw, 1.125rem)', maxWidth: '34ch' }}>
+      <p className="mt-4 md:mt-6 leading-relaxed mx-auto md:mx-0" style={{ color: INK, opacity: 0.7, fontSize: 'clamp(0.95rem, 1.05vw, 1.125rem)', maxWidth: '34ch' }}>
         AI has leveled the playing field. We help businesses use what was once reserved for the few.
       </p>
     </>
@@ -33,7 +35,7 @@ function Static() {
       <div className="pt-24"><Headline /></div>
       <div className="relative mt-8" style={{ height: '60svh' }}>
         <Paper />
-        <Actor static={{ src: '/film/actors/max-stack.webp', left: '50%' }} alt="Max, carrying a wobbling stack of papers" />
+        <Actor static={{ src: `${A}/max-stack.webp`, left: '50%' }} alt="Max, carrying a wobbling stack of papers" />
       </div>
       <Bubble speaker="max" static>A little <Hand>help</Hand> here?</Bubble>
     </>
@@ -67,9 +69,9 @@ function Stage({ progress }) {
       </div>
       <motion.div className="absolute inset-x-0 top-24 md:top-0 md:bottom-0 z-10 pointer-events-none px-6 md:px-[6vw] md:flex md:items-center text-center md:text-left"
         style={{ opacity: headOpacity, y: headY }}>
-        <div className="mx-auto md:mx-0" style={{ maxWidth: 'min(48vw, 720px)' }}><Headline /></div>
+        <div className="mx-auto md:mx-0 md:max-w-[min(48vw,720px)]"><Headline /></div>
       </motion.div>
-      <Bubble speaker="max" progress={progress} window={WINDOWS.hint} anchor={{ desktop: { left: '62%', top: '16%' }, mobile: { slot: 1, top: '42%' } }}>
+      <Bubble speaker="max" progress={progress} window={WINDOWS.hint} anchor={{ desktop: { left: '62%', top: '16%' }, mobile: { slot: 1, top: MOBILE_HINT_TOP } }}>
         A little <Hand>help</Hand> here?
       </Bubble>
       <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none" style={{ opacity: arrowOpacity }}>

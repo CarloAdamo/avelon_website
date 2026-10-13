@@ -6,7 +6,8 @@ import App from './App.jsx'
 
 // Lazy — TestPage pulls in the Spline runtime, which must stay out of the main bundle.
 const TestPage = lazy(() => import('./pages/TestPage.jsx'))
-const CaptureFrame = lazy(() => import('./film/CaptureFrame.jsx'))
+// Dev only: the frame-capture stage for the film clips (scripts/film/frame.mjs). Production never ships it.
+const CaptureFrame = import.meta.env.DEV ? lazy(() => import('./film/CaptureFrame.jsx')) : null
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,7 +22,7 @@ createRoot(document.getElementById('root')).render(
             </Suspense>
           }
         />
-        <Route path="/capture" element={<Suspense fallback={null}><CaptureFrame /></Suspense>} />
+        {CaptureFrame && <Route path="/capture" element={<Suspense fallback={null}><CaptureFrame /></Suspense>} />}
       </Routes>
     </BrowserRouter>
   </StrictMode>,

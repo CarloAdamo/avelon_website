@@ -19,7 +19,7 @@ describe('Scene', () => {
       <Scene id="question" length={2.5} reduced staticContent={<p>static</p>}>{() => <p>stage</p>}</Scene>
     );
     expect(html).toContain('data-film-static="true"');
-    expect(html).toContain('static');
+    expect(html).toContain('<p>static</p>');
     expect(html).not.toContain('sticky');
     expect(html).not.toContain('350svh');
   });

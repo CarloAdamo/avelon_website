@@ -94,11 +94,12 @@ export default function ScrubVideo({
   }, [activated, failed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (failed) {
-    return <motion.img data-video-failed="true" src={poster} alt="" className={className} style={{ ...style, opacity: op }} />;
+    return <motion.img data-video-failed="true" src={poster} alt="" aria-hidden="true" className={className} style={{ ...style, opacity: op }} />;
   }
 
   return (
-    <motion.video ref={videoRef} poster={poster} muted playsInline preload="none"
+    // Decorative; the poster is set only once activated so it loads with the video, not with the page.
+    <motion.video ref={videoRef} poster={activated ? poster : undefined} muted playsInline preload="none" aria-hidden="true"
       data-scrub-active={active ? 'true' : undefined}
       className={className} style={{ ...style, opacity: op }} />
   );

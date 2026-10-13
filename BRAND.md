@@ -27,7 +27,7 @@ layout. Neither pure cartoon nor pure tech-startup.
 | **Paper** | `#F3ECE1` | Primary background. Used everywhere. The "canvas." |
 | **Ink** | `#1F1A14` | Primary text colour. Warm near-black. |
 | **Accent (Lila)** | `#6B5B95` | Handwritten words, links, CTAs, brand markers (`true*`). |
-| **Sky** | `#77C1E2` | Transition / atmospheric colour. Used in the rocket scroll story. Sampled directly from the video. |
+| **Sky** | `#77C1E2` | Transition / atmospheric colour. Reserved; not used on the current site. |
 
 **Subtle alpha tints** (don't introduce new greys; layer Ink at low opacity):
 
@@ -137,7 +137,7 @@ shading, occasional muted colour accents (rust, gold, deep amber).
 Long-form pencil sketches can be turned into **scroll-scrubbed videos**. Spec:
 
 - 16:9 landscape (1280×720 sufficient)
-- 6–10 seconds source duration
+- About 5 seconds source duration
 - **Re-encoded as all-keyframe MP4** (`-x264-params keyint=1:scenecut=0`) so frame-by-frame seek is instant
 - Use the same cream paper background and pencil aesthetic
 - Calm pacing — single continuous transformation, no rapid cuts
@@ -265,7 +265,7 @@ quiet and attentive, not flashy.
 Paper      #F3ECE1
 Ink        #1F1A14
 Lila       #6B5B95
-Sky        #77C1E2
+Sky        #77C1E2   (reserved)
 
 Inter      300 / 400 / 500 / 600 / 700 / 800 / 900
 Caveat     400 / 500 / 600 / 700  →  use 700 in lila for accents
