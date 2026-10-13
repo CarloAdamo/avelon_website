@@ -142,6 +142,30 @@ Long-form pencil sketches can be turned into **scroll-scrubbed videos**. Spec:
 - Use the same cream paper background and pencil aesthetic
 - Calm pacing — single continuous transformation, no rapid cuts
 
+### 4.3 Characters
+
+Two characters carry the film. Both exist as approved character sheets, kept
+in the repo as the canon: `public/film/canon/max-sheet.png` and
+`public/film/canon/guide-sheet.png`.
+
+- **Max** (the customer): 1930s rubber-hose founder. Round head, dark hair
+  tuft, white shirt with rolled sleeves, suspenders, rust-red tie (the only
+  colour on him), dark trousers, big rounded shoes. Poses on sheet: neutral,
+  overwhelmed walk with wobbling paper stack + laptop, relieved with open arms.
+- **The guide** (Avelon): same drawing style and proportions, taller and
+  leaner. Round-collared three-button jacket, slim trousers, same big shoes,
+  pencil behind one ear, muted purple scarf (the only colour on him). Poses:
+  neutral with hands in pockets, pointing and explaining, drawing a curve in
+  the air with the pencil.
+
+Rules: original designs, never mouse ears, never gloves, never a round black
+silhouette; every generation attaches both sheets.
+
+Prompt invariants for every image: "Hand-drawn pencil sketch on cream paper
+#F3ECE1, soft graphite shading, vintage 1930s animation style, confident clean
+line work, original characters, no mouse ears, no gloves, no text, no
+watermark, no white background, no gradients or glow."
+
 ---
 
 ## 5. Layout & UI
@@ -196,7 +220,7 @@ identical. Component lives at `src/components/ui/SectionDivider.jsx`.
 Most motion comes from **scroll position**, not autoplay. The brand feels
 quiet and attentive, not flashy.
 
-- **Scroll-scrubbed videos** for the rocket hero and astronaut "true means"
+- **Scroll-scrubbed clips** for Max arriving (title card) and the guide drawing (Build scene); everything else is cutouts moved by scroll
 - **Parallax / pan** for horizontal phases inside long sections
 - **Cross-fades** rather than slides between phases
 - **Eased fade-and-rise** for entrance: `opacity 0 → 1`, `y 30 → 0`,
@@ -226,6 +250,12 @@ quiet and attentive, not flashy.
 - *"We think with you. We build with you. We stay with you."*
 - *"Most teams ask what to automate. We ask what to redesign."* (this one is on the line, but lands because the contrast is concrete)
 - *"The build that took quarters and millions now ships in weeks."*
+- *"A little *help* here?"*
+- *"Laptops are the *easy* part. Walk with me."*
+- *"Email, files, CRM, invoicing, chat. We look after *all* of it."*
+- *"And where something is missing, we *build* it."*
+- *"Secure and *transparent*. You always know where your data goes."*
+- *"And we *stay*. Same people next year."*
 
 ---
 

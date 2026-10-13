@@ -1,6 +1,8 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import Container from '../ui/Container';
+import Bubble from '../../film/Bubble';
+import Hand from '../../film/Hand';
 
 const PAPER = '#F3ECE1';
 const INK = '#1f1a14';
@@ -62,6 +64,7 @@ function CaseCard({ caseStudy, index, isInView, isExpanded, onToggle }) {
         <img
           src={caseStudy.image}
           alt={caseStudy.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
         />
       </div>
@@ -196,6 +199,9 @@ export default function CaseStudies() {
       style={{ backgroundColor: PAPER }}
     >
       <Container>
+        <div className="max-w-[1500px] mx-auto mb-8">
+          <Bubble speaker="guide" static>Here's what it looked like for three of our <Hand>clients</Hand>.</Bubble>
+        </div>
         {/* Title */}
         <motion.div
           ref={ref}

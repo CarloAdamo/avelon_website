@@ -51,6 +51,10 @@ export default function Contact() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8 }}
           >
+            <div className="hidden md:flex items-end gap-6 mb-6" aria-hidden="true" style={{ height: 180 }}>
+              <img src="/film/actors/max-relieved.webp" alt="" loading="lazy" style={{ height: 180, width: 'auto' }} />
+              <img src="/film/actors/guide-neutral.webp" alt="" loading="lazy" style={{ height: 196, width: 'auto' }} />
+            </div>
             <h2
               className="font-extrabold leading-tight mb-6"
               style={{

@@ -19,22 +19,25 @@ npm run preview -- --port 4173 --strictPort   # run in background
 Headless Chrome via puppeteer-core (install `--no-save` in a scratch dir,
 executablePath `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`).
 
-Key flows to exercise:
-- **Hero / RocketScroll** (`/`, first 900vh): rocket video must scrub —
-  `document.querySelector('video').currentTime` should change after
-  `window.scrollTo(0, innerHeight * 4)`.
-- **TrueMeaning** (next 1000vh): astronaut video is lazy — it must NOT be
-  requested on initial load, and MUST load + scrub after scrolling to
-  ~9.5 × innerHeight. Watch `.mp4` network requests to confirm.
-- **/test**: lazy route pulling the Spline runtime chunks — should 200 without
-  bloating the `/` bundle (check `dist/assets/` for separate spline chunks).
+The film is six pinned scenes, each `<section data-scene=ID data-length=L>`; scroll
+position for progress p inside a scene is `section.offsetTop + p * L * innerHeight`.
+
+Key flows:
+- **title** (L 2): video `/film/video/max-arrives.mp4` loads only after the window
+  `load` event, then `document.querySelector('[data-scene=title] video').currentTime`
+  changes while scrolling 0→0.8.
+- **question / connect / agents / stay**: every `[data-bubble]` reaches opacity > 0.9 at the
+  middle of its hold window (windows are exported as `WINDOWS` from `src/film/scenes/*.jsx`).
+- **build** (L 3): `/film/video/guide-draws.mp4` is requested only once the scene is within
+  one viewport, then scrubs.
+- Reduced motion (`page.emulateMediaFeatures([{name:'prefers-reduced-motion', value:'reduce'}])`):
+  no `position: sticky`, all bubbles visible, page shorter than 12 viewports.
+- **/test**: lazy Spline route still 200s without bloating `/`.
 
 ## Gotchas
 
-- Scrub videos (`public/rocket/rocket-scrub.mp4`, `public/videos/astronaut-scrub.mp4`)
-  must stay **all-intra** (ffmpeg `-g 1`) or scroll scrubbing stutters badly.
-  Re-encode recipe: `ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 28 -g 1
-  -pix_fmt yuv420p -movflags +faststart out.mp4` (ffmpeg binary at
-  `node_modules/ffmpeg-static/ffmpeg`).
-- Images are WebP; grep `dist/assets/*.js` for stray `.png` refs after asset work.
+- Scrub clips (`public/film/video/*.mp4`) must stay **all-intra** (ffmpeg `-g 1`) or scrubbing stutters.
+  Recipe: `ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 26 -g 1 -pix_fmt yuv420p -movflags +faststart -vf scale=1280:-2 out.mp4`.
+- Cutouts must keep alpha (`scripts/film/to-webp.sh in.png out.webp lossless`).
+- Images are WebP; grep `dist/assets/*.js` for stray `.png` refs after asset work (the paper tile is the one allowed PNG).
 - Production domain: https://avelon.ai (Vercel project `avelon-website`).
