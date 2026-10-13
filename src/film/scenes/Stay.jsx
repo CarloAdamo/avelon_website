@@ -34,10 +34,10 @@ export default function Stay({ reduced }) {
           <SystemBoxes progress={progress} appear={[0, 0.001]} connect={[0.001, 0.002]} showNew={0} locks flow />
           <Actor progress={progress} alt="Max, relieved" sequence={[{ from: 0, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['30%', '30%']]} />
           <Actor progress={progress} alt="The guide" sequence={[{ from: 0, src: `${A}/guide-neutral.webp` }]} x={[[0, 1], ['44%', '44%']]} />
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.secure} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.secure} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 1 } }}>
             Secure and <Hand>transparent</Hand>. You always know where your data goes.
           </Bubble>
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.stay} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 2 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.stay} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 2 } }}>
             And we <Hand>stay</Hand>. Same people next year.
           </Bubble>
         </>

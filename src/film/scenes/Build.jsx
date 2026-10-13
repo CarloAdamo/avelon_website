@@ -51,10 +51,10 @@ function Stage({ progress }) {
       )}
       <Actor progress={progress} alt="The guide, drawing" sequence={[{ from: 0, src: `${A}/guide-draw.webp` }]} x={[[0, 1], ['44%', '44%']]} opacity={fadeIn} zIndex={12} />
       <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }, { from: 0.75, src: `${A}/max-relieved.webp` }]} x={[[0, 1], ['30%', '30%']]} opacity={fadeIn} zIndex={12} />
-      <Bubble speaker="guide" progress={progress} window={WINDOWS.build} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
+      <Bubble speaker="guide" progress={progress} window={WINDOWS.build} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 1 } }}>
         And where something is missing, we <Hand>build</Hand> it.
       </Bubble>
-      <Caption progress={progress} window={WINDOWS.build} anchor={{ left: '52%', top: '31%', maxWidth: 'min(40ch, 20vw)' }}>
+      <Caption progress={progress} window={WINDOWS.build} anchor={{ left: '55%', top: '31%', maxWidth: 'min(40ch, 18vw)' }}>
         A portal, a dashboard, an internal tool. Usually in weeks.
       </Caption>
     </>

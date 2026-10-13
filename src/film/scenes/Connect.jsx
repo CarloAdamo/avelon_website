@@ -40,10 +40,10 @@ export default function Connect({ reduced }) {
             sequence={[{ from: 0, src: `${A}/guide-walk-a.webp` }, { from: 0.12, src: `${A}/guide-point.webp` }]}
             walk={{ frames: [`${A}/guide-walk-a.webp`, `${A}/guide-walk-b.webp`], window: [0, 0.12] }}
             x={[[0, 0.12], ['110%', '44%']]} />
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.all} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.all} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 1 } }}>
             Email, files, CRM, invoicing, chat. We look after <Hand>all</Hand> of it.
           </Bubble>
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.connect} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 2 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.connect} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 2 } }}>
             First we <Hand>connect</Hand> what you already have. One customer, one record, everywhere.
           </Bubble>
         </>

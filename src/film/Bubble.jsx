@@ -40,7 +40,8 @@ export default function Bubble({ speaker, anchor, progress, window: win, static:
   const source = progress ?? fallback;
   const opacity = useTransform(source, (p) => (win ? bubbleOpacity(win, p) : 1));
   const y = useTransform(source, (p) => (win ? bubbleRise(win, p) : 0));
-  const side = speaker === 'max' ? 'left' : 'right';
+  // The tail points at the speaker; an anchor can override the side on desktop when the speaker stands left of the bubble.
+  const side = (isDesktop && anchor?.desktop?.tail) || (speaker === 'max' ? 'left' : 'right');
 
   if (isStatic) {
     return (

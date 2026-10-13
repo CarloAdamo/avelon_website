@@ -38,10 +38,10 @@ export default function Agents({ reduced }) {
           <AgentBot progress={progress} travel={[0.10, 0.90]} src={`${A}/agent-bot.webp`} />
           <Actor progress={progress} alt="Max" sequence={[{ from: 0, src: `${A}/max-neutral.webp` }]} x={[[0, 1], ['30%', '30%']]} />
           <Actor progress={progress} alt="The guide" sequence={[{ from: 0, src: `${A}/guide-point.webp` }]} x={[[0, 1], ['44%', '44%']]} />
-          <Bubble speaker="guide" progress={progress} window={WINDOWS.agents} anchor={{ desktop: { left: '52%', top: '10.5%' }, mobile: { slot: 1 } }}>
+          <Bubble speaker="guide" progress={progress} window={WINDOWS.agents} anchor={{ desktop: { left: '52%', top: '10.5%', tail: 'left' }, mobile: { slot: 1 } }}>
             Then we show you how to work with AI <Hand>agents</Hand>.
           </Bubble>
-          <Caption progress={progress} window={WINDOWS.agents} anchor={{ left: '52%', top: '31%', maxWidth: 'min(40ch, 20vw)' }}>
+          <Caption progress={progress} window={WINDOWS.agents} anchor={{ left: '55%', top: '31%', maxWidth: 'min(40ch, 18vw)' }}>
             They answer questions, move data, write the first draft.
           </Caption>
         </>
