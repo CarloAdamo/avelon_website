@@ -1617,13 +1617,15 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 // Scroll length (viewports) and bubble windows [in0, in1, out0, out1] per scene.
 // Bubbles are rendered in the DOM in the same key order as WINDOWS; the verification script relies on that.
 // SHORT lists windows exempt from the 0.8-viewport hold rule (the title-card hint only).
+// Lengths total 18.5 viewports of scrubbing (about 40–60 s at a normal scroll pace). Windows are
+// fractions of L, so lengthening a scene lengthens every hold in it; the test below enforces the minimum.
 export const SCENES = {
-  title:    { L: 1.5, WINDOWS: { hint: [0, 0, 0.25, 0.4] }, SHORT: ['hint'] },
-  question: { L: 2.5, WINDOWS: { max: [0.10, 0.18, 0.50, 0.58], guide: [0.58, 0.66, 0.98, 1.0] } },
-  connect:  { L: 3.5, WINDOWS: { all: [0.18, 0.25, 0.48, 0.55], connect: [0.58, 0.65, 0.93, 1.0] } },
-  agents:   { L: 2.5, WINDOWS: { agents: [0.15, 0.23, 0.60, 0.68] } },
-  build:    { L: 2.5, WINDOWS: { build: [0.25, 0.33, 0.70, 0.78] } },
-  stay:     { L: 2.5, WINDOWS: { secure: [0.05, 0.13, 0.45, 0.53], stay: [0.55, 0.63, 0.95, 1.0] } },
+  title:    { L: 2,   WINDOWS: { hint: [0, 0, 0.25, 0.4] }, SHORT: ['hint'] },
+  question: { L: 3,   WINDOWS: { max: [0.10, 0.18, 0.50, 0.58], guide: [0.58, 0.66, 0.98, 1.0] } },
+  connect:  { L: 4.5, WINDOWS: { all: [0.18, 0.25, 0.48, 0.55], connect: [0.58, 0.65, 0.93, 1.0] } },
+  agents:   { L: 3,   WINDOWS: { agents: [0.15, 0.23, 0.60, 0.68] } },
+  build:    { L: 3,   WINDOWS: { build: [0.25, 0.33, 0.70, 0.78] } },
+  stay:     { L: 3,   WINDOWS: { secure: [0.05, 0.13, 0.45, 0.53], stay: [0.55, 0.63, 0.95, 1.0] } },
 };
 ```
 
@@ -2400,12 +2402,12 @@ The film is six pinned scenes, each `<section data-scene=ID data-length=L>`; scr
 position for progress p inside a scene is `section.offsetTop + p * L * innerHeight`.
 
 Key flows:
-- **title** (L 1.5): video `/film/video/max-arrives.mp4` loads only after the window
+- **title** (L 2): video `/film/video/max-arrives.mp4` loads only after the window
   `load` event, then `document.querySelector('[data-scene=title] video').currentTime`
   changes while scrolling 0→0.8.
 - **question / connect / agents / stay**: every `[data-bubble]` reaches opacity > 0.9 at the
   middle of its hold window (windows are exported as `WINDOWS` from `src/film/scenes/*.jsx`).
-- **build** (L 2.5): `/film/video/guide-draws.mp4` is requested only once the scene is within
+- **build** (L 3): `/film/video/guide-draws.mp4` is requested only once the scene is within
   one viewport, then scrubs.
 - Reduced motion (`page.emulateMediaFeatures([{name:'prefers-reduced-motion', value:'reduce'}])`):
   no `position: sticky`, all bubbles visible, page shorter than 12 viewports.

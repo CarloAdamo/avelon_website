@@ -42,7 +42,7 @@ A scene has a **scroll length `L`** in viewports: the distance the visitor scrol
 - Fade in and fade out are 0.2 viewport each: `0.2 / L`.
 - Two bubbles in one scene never overlap in their hold windows.
 
-Film totals: 15 viewports of scrubbing, 21 viewports of page height (six scenes, `L + 1` each).
+Film totals: 18.5 viewports of scrubbing, 24.5 viewports of page height (six scenes, `L + 1` each). At a normal scroll pace of about two seconds per viewport that is 40 to 60 seconds; a fast skim is about 20 seconds. Lengths live in one place (`src/film/scenes/windows.js`); windows are fractions of `L`, so a scene can be lengthened later without retiming its bubbles.
 
 ### 3.2 Components (`src/film/`)
 
@@ -86,7 +86,7 @@ Forms never live inside a sticky stage.
 
 Windows are progress fractions and respect §3.1 (hold ≥ `0.8/L`). Bubble windows are written `[in0, in1, out0, out1]`.
 
-### Scene 0 — Title card (L = 1.5)
+### Scene 0 — Title card (L = 2)
 
 Headline unchanged: "Your **true\*** digital partner for the AI era." Left column on desktop, top on mobile. Right column / lower half: **Video 1**, Max arriving from the left with the wobbling paper stack and laptop, two sheets fluttering down, `loadPolicy="afterLoad"`, scrubbed over `[0.0, 0.8]`. Under the headline, Inter at 70%: "AI has leveled the playing field. We help businesses use what was once reserved for the few."
 
@@ -96,7 +96,7 @@ Headline and subline fade out over `[0.85, 1.0]`.
 
 Static: headline, subline, poster, hint bubble.
 
-### Scene 1 — The question (L = 2.5)
+### Scene 1 — The question (L = 3)
 
 Backdrop: paper. Max (`max-stack`) stands at 22% from the left. Guide walks in from the right, `walk.window [0.0, 0.15]`, `x` from 110% to 66%; `sequence`: `guide-walk` frames until 0.15, `guide-wave` from 0.15, `guide-neutral` from 0.5.
 
@@ -105,7 +105,7 @@ Backdrop: paper. Max (`max-stack`) stands at 22% from the left. Guide walks in f
 
 Static: both actors, both bubbles.
 
-### Scene 2 — Everything you run on, connected (L = 3.5)
+### Scene 2 — Everything you run on, connected (L = 4.5)
 
 Backdrop: empty sketched office. Both characters walk in `[0.0, 0.12]` and stop (Max 34%, guide 50%). `SystemBoxes appear=[0.12, 0.45]`, `connect=[0.50, 0.85]`.
 
@@ -114,7 +114,7 @@ Backdrop: empty sketched office. Both characters walk in `[0.0, 0.12]` and stop 
 
 Static: office, both actors, boxes connected, both bubbles.
 
-### Scene 3 — AI agents (L = 2.5)
+### Scene 3 — AI agents (L = 3)
 
 Office, boxes connected. `agent-bot` cutout travels along the adjacency path (CSS `offset-path` on the SVG path, `offset-distance` via `useTransform`, `[0.10, 0.90]`); each box it reaches gets a short ink ring "ping". Max `max-neutral`, guide `guide-point`.
 
@@ -123,7 +123,7 @@ Office, boxes connected. `agent-bot` cutout travels along the adjacency path (CS
 
 Static: office, boxes, agent at the midpoint of the path, bubble, caption.
 
-### Scene 4 — Build (L = 2.5)
+### Scene 4 — Build (L = 3)
 
 Office. **Video 2** (`nearViewport`, desktop only): the guide draws a new box in the air with the pencil and it becomes a box with a small screen, scrubbed over `[0.05, 0.75]`. The clip is captured from the same composition the stage shows (office, boxes, both characters at their stage positions, 1920×1080) and rendered full-stage with `object-fit: cover`, so the drawn box lands where the SVG portal appears at `(50, 86)`. The SVG new box and its two lines are hidden until 0.75, then draw in while the video fades out `[0.75, 0.85]`; the crossfade hides small offsets. Max `max-neutral` until 0.75, `max-relieved` after. On mobile (< 768px) there is no video: the guide holds the drawing pose and the portal box plus its two lines draw in at 0.75 in the 4×2 grid.
 
@@ -132,7 +132,7 @@ Office. **Video 2** (`nearViewport`, desktop only): the guide draws a new box in
 
 Static: office, boxes with the new box, `guide-draw`, `max-relieved`, bubble, caption.
 
-### Scene 5 — Secure, and we stay (L = 2.5)
+### Scene 5 — Secure, and we stay (L = 3)
 
 The "after" picture and the payoff: all eight boxes connected, the paper stack gone, Max `max-relieved`, guide `guide-neutral`. `SystemBoxes locks flow`: a small sketched lock at each line's midpoint and a dotted flow along the lines.
 
@@ -211,7 +211,7 @@ The subagent that runs this pass reports screenshots and numbers, not opinions.
 
 ## 9. Risks
 
-- **Scroll fatigue.** 15 viewports of scrubbing before interactive content. Mitigation: nav anchors, short holds, the "after" payoff in scene 5.
+- **Scroll fatigue.** 18.5 viewports of scrubbing before interactive content, chosen deliberately so the film is not over in half a minute. Mitigation: nav anchors for skippers, something moving in every scene, the "after" payoff in scene 5. If the browser pass feels slow, lengths come down in one file.
 - **Character drift.** Mitigated structurally: cutouts generated once and reused; backdrops empty; videos from composited frames.
 - **Moderation blocks.** Output-stage blocks when a result resembles a known mascot. Mitigation: the invariants line in every prompt; retry once with softer wording; never add mascot tropes.
 - **Video style drift.** Image-to-video may lose the pencil look or move the camera. Mitigation: model comparison test before producing the real clips; acceptance criteria in §6.2.
