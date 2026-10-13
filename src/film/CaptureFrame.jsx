@@ -1,9 +1,8 @@
 import Actor from './Actor';
 import { Paper, Backdrop } from './Backdrop';
 import SystemBoxes from './SystemBoxes';
-
-const A = '/film/actors';
-const OFFICE = { src: '/film/backdrops/office.webp', srcMobile: '/film/backdrops/office-800.webp' };
+import Camera from './Camera';
+import { A, OFFICE } from './assets';
 
 function Title() {
   return (
@@ -17,15 +16,21 @@ function Title() {
 function BuildStart() {
   return (
     <>
-      <Backdrop {...OFFICE} />
-      <SystemBoxes static showNew={null} />
-      <Actor static={{ src: `${A}/max-neutral.webp`, left: '30%' }} alt="Max" />
-      <Actor static={{ src: `${A}/guide-draw.webp`, left: '44%' }} alt="The guide" />
+      <Paper />
+      <Camera>
+        <Backdrop {...OFFICE} />
+        <SystemBoxes static showNew={null} />
+        <Actor static={{ src: `${A}/max-neutral.webp`, left: '30%' }} alt="Max" />
+        <Actor static={{ src: `${A}/guide-draw.webp`, left: '44%' }} alt="The guide" />
+      </Camera>
     </>
   );
 }
 
-/** Dev route `/capture?scene=title|build`: a 1920×1080 stage used to screenshot video start frames. */
+/**
+ * Dev-only route `/capture?scene=title|build` (`npm run dev`): a 1920×1080 stage used to screenshot video
+ * start frames. The stage is 16:9, so the office camera fills it and the capture equals the live camera.
+ */
 export default function CaptureFrame() {
   const scene = new URLSearchParams(window.location.search).get('scene') || 'title';
   const Composition = scene === 'build' ? BuildStart : Title;

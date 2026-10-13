@@ -3,21 +3,28 @@ import { motion, useMotionValue, useMotionValueEvent, useTransform } from 'frame
 import useIsDesktop from './useIsDesktop';
 import { BOXES, EDGES, positions, segments } from './boxesLayout';
 import { ramp } from './math';
-import { INK, ACCENT, PAPER, NAV_HEIGHT } from './constants';
+import { INK, ACCENT, PAPER, DESKTOP_BAND } from './constants';
 
 const HAND_RADIUS = '255px 15px 225px 15px / 15px 225px 15px 255px';
+
+// Desktop sizes are in camera units (see Camera.jsx), matched to the 1920×1080 capture of the Build clip:
+// 112px boxes = 5.85% of the camera width, the 80px navbar band = 7.4% of its height, 0.95rem labels = 0.79cqw.
+const SIZE = {
+  desktop: { width: '5.85%', font: 'clamp(0.6rem, 0.79cqw, 1.2rem)', tracking: 'normal', lock: 'clamp(12px, 0.94cqw, 24px)' },
+  mobile: { width: 56, font: '0.7rem', tracking: '-0.03em', lock: 18 },
+};
 
 function Box({ box, x, y, size, opacity, isNew }) {
   return (
     <motion.div data-box={box.id} className="absolute flex flex-col items-center justify-center gap-1 pointer-events-none"
       style={{
-        left: `${x}%`, top: `${y}%`, width: size, height: size, x: '-50%', y: '-50%', opacity,
+        left: `${x}%`, top: `${y}%`, width: size.width, aspectRatio: '1', x: '-50%', y: '-50%', opacity,
         border: `2px solid ${isNew ? ACCENT : 'rgba(31,26,20,0.7)'}`, borderRadius: HAND_RADIUS, backgroundColor: PAPER,
         boxShadow: '0 2px 12px rgba(31, 26, 20, 0.06)',
       }}>
       {box.logo
         ? <img src={box.logo} alt={box.label} loading="lazy" style={{ width: '46%', height: '46%', objectFit: 'contain' }} />
-        : <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, color: isNew ? ACCENT : INK, fontSize: size > 80 ? '0.95rem' : '0.6rem' }}>{box.label}</span>}
+        : <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, color: isNew ? ACCENT : INK, fontSize: size.font, letterSpacing: size.tracking }}>{box.label}</span>}
     </motion.div>
   );
 }
@@ -32,7 +39,7 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   const fallback = useMotionValue(1);
   const p = isStatic ? fallback : progress;
   const pos = positions(isDesktop);
-  const size = isDesktop ? 112 : 56;
+  const size = isDesktop ? SIZE.desktop : SIZE.mobile;
   const withPortal = showNew !== null;
   const segs = segments(isDesktop, withPortal);
   const base = BOXES.filter((b) => !b.isNew);
@@ -63,7 +70,7 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   });
 
   return (
-    <div className="absolute inset-x-0 bottom-0 pointer-events-none" data-boxes style={{ top: isDesktop ? NAV_HEIGHT : 0 }}>
+    <div className="absolute inset-x-0 bottom-0 pointer-events-none" data-boxes style={{ top: isDesktop ? DESKTOP_BAND : 0 }}>
       <svg data-boxes-svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden="true">
         {segs.map((s, j) => (
           <motion.line key={`${s.from}-${s.to}`} x1={s.x1} y1={s.y1} x2={ends[j].x2} y2={ends[j].y2}
@@ -80,7 +87,7 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
       {locks && segs.map((s) => (
         <span key={`lock-${s.from}-${s.to}`} data-lock={`${s.from}-${s.to}`} className="absolute pointer-events-none"
           style={{ left: `${(s.x1 + s.x2) / 2}%`, top: `${(s.y1 + s.y2) / 2}%`, transform: 'translate(-50%,-50%)' }}>
-          <svg viewBox="0 0 20 22" width="18" height="20" aria-hidden="true">
+          <svg viewBox="0 0 20 22" aria-hidden="true" style={{ width: size.lock, height: 'auto', display: 'block' }}>
             <rect x="3" y="9" width="14" height="11" rx="2" fill={PAPER} stroke={INK} strokeWidth="1.5" />
             <path d="M 6 9 V 6 A 4 4 0 0 1 14 6 V 9" fill="none" stroke={INK} strokeWidth="1.5" strokeLinecap="round" />
           </svg>
