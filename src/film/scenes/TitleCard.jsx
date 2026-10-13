@@ -2,6 +2,7 @@ import { motion, useTransform } from 'framer-motion';
 import Scene from '../Scene';
 import Bubble from '../Bubble';
 import Hand from '../Hand';
+import Actor from '../Actor';
 import ScrubVideo from '../ScrubVideo';
 import { Paper } from '../Backdrop';
 import { ramp } from '../math';
@@ -30,7 +31,10 @@ function Static() {
   return (
     <>
       <div className="pt-24"><Headline /></div>
-      <img src={`${V}/max-arrives.webp`} alt="Max arriving with a wobbling stack of papers" loading="eager" className="w-full mt-8" />
+      <div className="relative mt-8" style={{ height: '60svh' }}>
+        <Paper />
+        <Actor static={{ src: '/film/actors/max-stack.webp', left: '50%' }} alt="Max, carrying a wobbling stack of papers" />
+      </div>
       <Bubble speaker="max" static>A little <Hand>help</Hand> here?</Bubble>
     </>
   );
