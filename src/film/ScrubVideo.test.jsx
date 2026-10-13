@@ -16,4 +16,9 @@ describe('ScrubVideo', () => {
     expect(html).not.toContain('poster=');
     expect(html).not.toContain('src="/film/video/a.mp4"');
   });
+  it('sets the poster at once for afterLoad videos, defers it for nearViewport ones', () => {
+    const props = { progress: motionValue(0), window: [0, 0.8], src: '/film/video/a.mp4', poster: '/film/video/a.webp' };
+    expect(renderToStaticMarkup(<ScrubVideo {...props} loadPolicy="afterLoad" />)).toContain('poster="/film/video/a.webp"');
+    expect(renderToStaticMarkup(<ScrubVideo {...props} />)).not.toContain('poster=');
+  });
 });

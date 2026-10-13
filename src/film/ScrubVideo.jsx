@@ -98,8 +98,9 @@ export default function ScrubVideo({
   }
 
   return (
-    // Decorative; the poster is set only once activated so it loads with the video, not with the page.
-    <motion.video ref={videoRef} poster={activated ? poster : undefined} muted playsInline preload="none" aria-hidden="true"
+    // Decorative. A nearViewport poster waits for activation so it loads with its video, not with the page;
+    // an afterLoad (title card) poster is set at once: it is preloaded and keeps the hero sized before load.
+    <motion.video ref={videoRef} poster={activated || loadPolicy === 'afterLoad' ? poster : undefined} muted playsInline preload="none" aria-hidden="true"
       data-scrub-active={active ? 'true' : undefined}
       className={className} style={{ ...style, opacity: op }} />
   );
