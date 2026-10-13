@@ -42,7 +42,7 @@ only under `npm run dev`; production builds do not ship it. To recapture a start
 
 ```bash
 npm run dev                                         # http://localhost:5173, run in background
-node scripts/film/frame.mjs build frame-build.png   # needs puppeteer-core, see "Drive it"
+node frame.mjs build frame-build.png   # a copy of scripts/film/frame.mjs in the puppeteer scratch dir
 ```
 
 The Seedance motion prompts for both clips are in `scripts/film/prompts.md`.

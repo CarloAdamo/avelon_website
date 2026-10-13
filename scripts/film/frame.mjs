@@ -1,7 +1,8 @@
 // Screenshot a 1920×1080 start frame for a film clip from the dev-only /capture route.
 // Usage: npm run dev   (in another shell), then
-//        node scripts/film/frame.mjs build frame-build.png   (scene: title | build)
-// Needs puppeteer-core (npx -y -p puppeteer-core node ..., or a scratch install) and Google Chrome.
+//        node frame.mjs build frame-build.png   (scene: title | build; see below for where to run it)
+// Needs Google Chrome and puppeteer-core, which is not a repo dependency: ESM resolves packages from the
+// script's own folder, so copy this file into a scratch dir with `npm i --no-save puppeteer-core` and run it there.
 import puppeteer from 'puppeteer-core';
 
 const [, , scene = 'build', out = `frame-${scene}.png`] = process.argv;

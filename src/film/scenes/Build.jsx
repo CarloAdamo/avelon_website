@@ -13,10 +13,13 @@ import { SCENES } from './windows';
 
 const { L, WINDOWS } = SCENES.build;
 
-// Seedance rendered the clip slightly shrunk against its start frame (content at 0.9874·x − 4.8px,
-// 0.9698·y − 1.5px of the 1920×1080 capture; fitted on the seven box centres, residuals under 1.5px).
-// This maps it back onto the capture, and so onto the live camera.
-const CLIP_FIT = { transformOrigin: '0 0', transform: 'translate(0.251%, 0.143%) scale(1.0128, 1.0312)' };
+// Seedance renders its clip slightly shrunk against the start frame. Measured with
+// scripts/film/measure-clip.py: each of the seven boxes in the 1920×1080 capture (frame-build.png) is
+// template-matched in the clip's first and last frames (upscaled to 1920×1080), and a per-axis line is
+// fitted: content at 0.9869·x − 4.31px, 0.9699·y − 1.46px (residuals under 1.5px, identical first and
+// last frame, so the clip does not drift). CLIP_FIT is the inverse, which maps the clip back onto the
+// capture and so onto the live camera.
+const CLIP_FIT = { transformOrigin: '0 0', transform: 'translate(0.228%, 0.139%) scale(1.0133, 1.0310)' };
 
 function Static() {
   return (

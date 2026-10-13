@@ -5,7 +5,8 @@ The two scroll-scrubbed clips in `public/film/video/` were generated with Higgsf
 (see `.claude/skills/verify/SKILL.md`). These are the accepted attempts.
 
 Start frames come from the dev-only capture route: `npm run dev`, then
-`node scripts/film/frame.mjs title frame-title.png` and `node scripts/film/frame.mjs build frame-build.png`.
+`node frame.mjs title frame-title.png` and `node frame.mjs build frame-build.png`, run from a copy of
+`scripts/film/frame.mjs` in a scratch dir with puppeteer-core installed.
 
 ```bash
 higgsfield generate create seedance_2_5 --mode omni_reference --start-image <frame.png> \
@@ -22,11 +23,16 @@ opening frames.
 
 ## Video 2: the guide draws the portal (`guide-draws.mp4`, Build; start frame `frame-build.png`)
 
-Job `9f7488e1-1700-45b6-83ab-31daa31281ae`, second attempt. The first attempt (the plan's original
-prompt) drew the box upper-middle, away from the portal position, so the placement was spelled out.
+Current clip: job `ef2b2bc5-9cd2-4309-80ef-afef0d637be2`, regenerated from a fresh start frame with solid
+lines (the earlier clip, job `9f7488e1-…`, showed the old dashed lines). Same prompt; the first of the two
+regeneration attempts (`95e95094-…`) drew the box on the floor line near Invoicing, the second drew it
+mid-right next to the pencil hand, where the portal sits (59, 58). The prompt's placement wording dates
+from the original run, whose first attempt drew the box upper-middle.
 
 > Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same two characters, boxes and drawing style as the start frame. The taller character in the scarf stretches his pencil arm out and down toward the lower right, and draws a small rounded rectangle low on the wall near the floor, to the right of the two characters, about two thirds of the way across the frame, just above the baseboard and left of the box labelled Invoicing; the pencil line appears stroke by stroke and becomes a small box with a screen, outlined in muted purple. The shorter character watches and smiles. The seven existing boxes and the office stay exactly still. The camera must not move, no zoom. No text, no speech bubbles, no new characters.
 
-The rendered clip is slightly shrunk against its start frame (content at 0.9874·x − 4.8 px,
-0.9698·y − 1.5 px of 1920×1080). `src/film/scenes/Build.jsx` undoes this with `CLIP_FIT`; a
-regenerated clip needs that fit measured again (compare the clip's first frame with the start frame).
+Seedance renders the clip slightly shrunk against its start frame (content at 0.9869·x − 4.31 px,
+0.9699·y − 1.46 px of 1920×1080; the same on every generation so far). `src/film/scenes/Build.jsx`
+undoes this with `CLIP_FIT`. After regenerating, extract the first and last frames
+(`ffmpeg -i raw.mp4 -frames:v 1 first.png`, `ffmpeg -sseof -0.1 -i raw.mp4 -frames:v 1 last.png`) and run
+`python3 scripts/film/measure-clip.py first.png last.png` next to `frame-build.png`; it prints the CSS.
