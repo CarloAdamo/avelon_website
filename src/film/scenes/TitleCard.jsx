@@ -18,12 +18,11 @@ function Headline() {
   return (
     <>
       <h1 className="font-extrabold leading-[1.05]" style={{ color: INK, fontSize: 'clamp(2rem, 4.2vw, 3.75rem)' }}>
-        <span className="block">Your <Hand>true*</Hand></span>
-        <span className="block">digital partner</span>
-        <span className="block">for the AI era.</span>
+        <span className="block">Your IT partner</span>
+        <span className="block">for the <Hand>AI</Hand> era.</span>
       </h1>
       <p className="mt-4 md:mt-6 leading-relaxed mx-auto md:mx-0" style={{ color: INK, opacity: 0.7, fontSize: 'clamp(0.95rem, 1.05vw, 1.125rem)', maxWidth: '34ch' }}>
-        AI has leveled the playing field. We help businesses use what was once reserved for the few.
+        We look after your whole digital landscape: connect your systems, put AI agents to work, build what's missing. Secure and transparent.
       </p>
     </>
   );

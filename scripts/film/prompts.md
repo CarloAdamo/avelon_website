@@ -14,12 +14,25 @@ higgsfield generate create seedance_2_5 --mode omni_reference --start-image <fra
   --wait --wait-timeout 20m --wait-interval 15s --json --prompt "<prompt>" > video.json
 ```
 
-## Video 1: Max arrives (`max-arrives.mp4`, title card; start frame `frame-title.png`)
+## Video 1: Max arrives (`max-arrives.mp4`, title card)
 
-Job `652c51a8-25f6-433e-a120-bbaf73502934`, first attempt. Encoded with `-ss 0.6` to drop the empty
-opening frames.
+Current clip: job `a219813e-6674-407c-8bf3-fc526cb1754d`, first attempt:
+**start and end image are the empty paper** (`/capture?scene=blank`, `frame-blank.png`) and Max comes in as
+`--image-references frame-title.png` (`/capture?scene=title`), so the frame is empty before the scroll
+starts and Max walks all the way out of the right edge. No `-ss` trim. The first clip (job
+`652c51a8-25f6-433e-a120-bbaf73502934`) started from `frame-title.png` with Max already in the frame and was
+trimmed 0.6 s.
 
-> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same character and drawing style as the start frame. The founder walks in from the left edge toward the right with a bouncy cartoon walk, carrying a wobbling stack of papers with a laptop on top; two sheets flutter to the ground; he looks worried and glances up. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie.
+```bash
+higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-blank.png --end-image frame-blank.png \
+  --image-references frame-title.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false \
+  --wait --wait-timeout 20m --wait-interval 15s --json --prompt "<prompt>" > video.json
+```
+
+> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style. The frame starts completely empty: plain cream paper, nothing else. The character from the reference image (the founder with the hair tuft, shirt, suspenders and rust-red tie) walks in from the left edge with a bouncy cartoon walk, carrying a wobbling stack of papers with a laptop on top, worried face, two sheets fluttering off; he keeps walking at a steady pace across the whole frame and walks out of the right edge, so the frame is completely empty again at the end. Side view, same size throughout. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie.
+
+Timing in the clip: Max enters at about 0.4 s, is mid-frame at 2.5–3 s, and is gone by 4.8 s; the two dropped
+sheets stay on the floor. The hint bubble window in `windows.js` is set from this.
 
 ## Video 2: the guide draws the portal (`guide-draws.mp4`, Build; start frame `frame-build.png`)
 

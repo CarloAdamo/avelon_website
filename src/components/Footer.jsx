@@ -31,7 +31,7 @@ export default function Footer() {
                 className="text-sm max-w-sm leading-relaxed"
                 style={{ color: INK, opacity: 0.65 }}
               >
-                Your{' '}
+                Your IT partner for the{' '}
                 <span
                   style={{
                     fontFamily: 'var(--font-hand)',
@@ -40,9 +40,9 @@ export default function Footer() {
                     fontSize: '1.1em',
                   }}
                 >
-                  true*
+                  AI
                 </span>{' '}
-                digital partner for the AI era.
+                era.
               </p>
             </div>
 

@@ -9,7 +9,7 @@ import Stay from './Stay';
 import { SCENES } from './windows';
 
 const scenes = [
-  ['title', TitleCard, ['digital partner', 'help']],
+  ['title', TitleCard, ['IT partner', 'help']],
   ['question', Question, ['Is that', 'Walk with me']],
   ['connect', Connect, ['We look after', 'One customer, one record, everywhere']],
   ['agents', Agents, ['AI', 'write the first draft']],

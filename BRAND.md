@@ -8,11 +8,14 @@
 
 ## 1. Core idea
 
-**Your *true*\* digital partner for the AI era.**
+**Your IT partner for the *AI* era.**
 
-The asterisk is the brand. *"True"* is the loaded word — what we are claiming
-about ourselves — and the asterisk invites the reader to scroll/keep reading
-to find out what it means. Don't drop the asterisk; it's the brand's signature.
+"IT partner" is the category the reader already knows; *"AI"* is the loaded
+word — the reason the category has to mean more than laptops and licences. The
+film at the top of the site (§4.3) is what explains that, so the headline makes
+the claim and the scroll earns it. (Until October 2026 the line was "Your
+true\* digital partner for the AI era"; the asterisk now lives on only as the
+section-divider motif.)
 
 The visual concept is a **cross between hand-drawn sketch and clean modern**.
 Pencil on cream paper, but with confident sans-serif typography and crisp
@@ -26,7 +29,7 @@ layout. Neither pure cartoon nor pure tech-startup.
 |---|---|---|
 | **Paper** | `#F3ECE1` | Primary background. Used everywhere. The "canvas." |
 | **Ink** | `#1F1A14` | Primary text colour. Warm near-black. |
-| **Accent (Lila)** | `#6B5B95` | Handwritten words, links, CTAs, brand markers (`true*`). |
+| **Accent (Lila)** | `#6B5B95` | Handwritten words, links, CTAs, brand markers (divider asterisk). |
 | **Sky** | `#77C1E2` | Transition / atmospheric colour. Reserved; not used on the current site. |
 
 **Subtle alpha tints** (don't introduce new greys; layer Ink at low opacity):
@@ -77,7 +80,7 @@ someone is writing in the margin of a printed document.
 The brand's signature typographic move: **a clean Inter headline with one
 handwritten Caveat word**.
 
-> Your **true\*** digital partner for the AI era.
+> Your IT partner for the **AI** era.
 > True means **rethinking** what's possible.
 > Real **customer** stories.
 > Get in **touch**.
@@ -246,7 +249,7 @@ quiet and attentive, not flashy.
 - Em-dash sentences that hinge on a contrast or reveal
 
 **Reference phrases that work**:
-- *"Your true\* digital partner for the AI era."*
+- *"Your IT partner for the AI era."*
 - *"We think with you. We build with you. We stay with you."*
 - *"Most teams ask what to automate. We ask what to redesign."* (this one is on the line, but lands because the contrast is concrete)
 - *"The build that took quarters and millions now ships in weeks."*
@@ -271,7 +274,7 @@ Inter      300 / 400 / 500 / 600 / 700 / 800 / 900
 Caveat     400 / 500 / 600 / 700  →  use 700 in lila for accents
 
 Pattern    Plain Inter + ONE Caveat word per phrase
-Asterisk   Always present on `true*`
+Asterisk   Section-divider motif (no longer on the headline)
 Imagery    Pencil sketch, cream paper, Hergé-style
 Sections   Single light theme, wavy divider with `*` between
 Motion     Scroll-driven, calm, eased

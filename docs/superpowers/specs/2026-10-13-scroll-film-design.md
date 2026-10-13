@@ -90,7 +90,7 @@ Windows are progress fractions and respect §3.1 (hold ≥ `0.8/L`). Bubble wind
 
 ### Scene 0 — Title card (L = 2)
 
-Headline unchanged: "Your **true\*** digital partner for the AI era." Left column on desktop, top on mobile. Right column / lower half: **Video 1**, Max arriving from the left with the wobbling paper stack and laptop, two sheets fluttering down, `loadPolicy="afterLoad"`, scrubbed over `[0.0, 0.8]`. Under the headline, Inter at 70%: "AI has leveled the playing field. We help businesses use what was once reserved for the few."
+Headline: "Your IT partner for the **AI** era." (changed from "Your true\* digital partner…" after the v1 review: the film's message is IT partner for the AI era, and the asterisk no longer has a footnote). Left column on desktop, top on mobile. Right column / lower half: **Video 1**, Max arriving from the left with the wobbling paper stack and laptop, two sheets fluttering down, `loadPolicy="afterLoad"`, scrubbed over `[0.0, 0.8]`. The clip starts and ends on empty paper (blank start and end frames, Max as an image reference): Max is not visible before the scroll begins, and he walks all the way out of the right edge. Under the headline, Inter at 70%: "We look after your whole digital landscape: connect your systems, put AI agents to work, build what's missing. Secure and transparent."
 
 Scroll hint: a small bubble from Max, `[0, 0, 0.25, 0.4]`, with the existing bouncing arrow beneath it: **"A little *help* here?"** The bubble is the invitation; the arrow is the affordance. No "scroll to…" instruction. (Alternatives for the owner to swap: "No popcorn *required*." / "Runtime: one *coffee*.")
 
