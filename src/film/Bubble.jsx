@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars -- motion.div is used in JSX; the repo's no-unused-vars config does not see member-expression JSX
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
 import { bubbleOpacity, bubbleRise } from './math';
