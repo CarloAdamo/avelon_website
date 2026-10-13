@@ -5,17 +5,18 @@ import SystemBoxes from './SystemBoxes';
 import AgentBot from './AgentBot';
 
 describe('SystemBoxes', () => {
-  it('renders eight boxes and nine lines, portal hidden until showNew', () => {
+  // Server rendering uses the mobile layout (useIsDesktop's server snapshot is false): the ring only.
+  it('renders eight boxes and the seven ring lines, portal hidden until showNew', () => {
     const html = renderToStaticMarkup(<SystemBoxes progress={motionValue(1)} appear={[0.1, 0.45]} connect={[0.5, 0.85]} showNew={null} />);
     expect(html.match(/data-box="/g)).toHaveLength(8);
-    expect(html.match(/<line/g)).toHaveLength(9);
+    expect(html.match(/<line/g)).toHaveLength(7);
     expect(html).toContain('data-box="portal"');
     expect(html).toContain('data-portal-visible="false"');
   });
   it('adds the two portal lines and locks when asked', () => {
     const html = renderToStaticMarkup(<SystemBoxes progress={motionValue(1)} appear={[0, 0.1]} connect={[0.1, 0.2]} showNew={0.5} locks />);
-    expect(html.match(/<line/g)).toHaveLength(11);
-    expect(html.match(/data-lock="/g)).toHaveLength(11);
+    expect(html.match(/<line/g)).toHaveLength(9);
+    expect(html.match(/data-lock="/g)).toHaveLength(9);
     expect(html).toContain('data-portal-visible="true"');
   });
   it('renders a static composition without motion values', () => {

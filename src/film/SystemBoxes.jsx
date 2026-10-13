@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import useIsDesktop from './useIsDesktop';
-import { BOXES, EDGES, positions, segments } from './boxesLayout';
+import { BOXES, positions, segments } from './boxesLayout';
 import { ramp } from './math';
 import { INK, ACCENT, PAPER, DESKTOP_BAND } from './constants';
 
@@ -44,7 +44,7 @@ export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0
   const segs = segments(isDesktop, withPortal);
   const base = BOXES.filter((b) => !b.isNew);
   const step = (appear[1] - appear[0]) / base.length;
-  const cstep = (connect[1] - connect[0]) / EDGES.length;
+  const cstep = (connect[1] - connect[0]) / segs.filter((s) => s.from !== 'portal').length;
 
   const boxOpacities = base.map((_, i) => useTransform(p, (v) => (isStatic ? 1 : ramp(appear[0] + i * step, appear[0] + (i + 1) * step, v)))); // eslint-disable-line react-hooks/rules-of-hooks
   // Ring and chord lines draw during `connect`; the two portal lines draw together with the portal box.

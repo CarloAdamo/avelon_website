@@ -27,17 +27,18 @@ export function positions(isDesktop) {
 
 const RING = ['email', 'files', 'crm', 'invoicing', 'chat', 'google', 'microsoft'];
 
-export const EDGES = [
-  ...RING.map((id, i) => [id, RING[(i + 1) % RING.length]]),
-  ['email', 'crm'],
-  ['microsoft', 'crm'],
-];
+// Adjacency: the ring in order, plus two chords across it (desktop only: on the mobile 4×2 grid the
+// chords would run along a row over the ring segments). The portal adds two edges when it exists.
+export const RING_EDGES = RING.map((id, i) => [id, RING[(i + 1) % RING.length]]);
+export const CHORDS = [['email', 'crm'], ['microsoft', 'crm']];
+export const EDGES = [...RING_EDGES, ...CHORDS];
 
 export const PORTAL_EDGES = [['portal', 'crm'], ['portal', 'invoicing']];
 
 export function segments(isDesktop, withPortal) {
   const pos = positions(isDesktop);
-  const edges = withPortal ? [...EDGES, ...PORTAL_EDGES] : EDGES;
+  const base = isDesktop ? EDGES : RING_EDGES;
+  const edges = withPortal ? [...base, ...PORTAL_EDGES] : base;
   return edges.map(([from, to]) => ({
     from, to, x1: pos[from][0], y1: pos[from][1], x2: pos[to][0], y2: pos[to][1],
   }));
