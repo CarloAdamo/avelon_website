@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import TitleCard from './TitleCard';
+import Build from './Build';
 import Question from './Question';
 import Connect from './Connect';
 import Agents from './Agents';
@@ -7,9 +9,11 @@ import Stay from './Stay';
 import { SCENES } from './windows';
 
 const scenes = [
+  ['title', TitleCard, ['digital partner', 'help']],
   ['question', Question, ['Is that', 'Walk with me']],
   ['connect', Connect, ['We look after', 'One customer, one record, everywhere']],
   ['agents', Agents, ['AI', 'write the first draft']],
+  ['build', Build, ['we', 'Usually in weeks']],
   ['stay', Stay, ['where your data goes', 'Same people next year']],
 ];
 

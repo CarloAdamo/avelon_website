@@ -1,10 +1,9 @@
 import Navbar from './components/Navbar';
-import TrueMeaning from './components/sections/TrueMeaning';
+import Film from './film/Film';
 import CaseStudies from './components/sections/CaseStudies';
 import Career from './components/sections/Career';
 import Contact from './components/sections/Contact';
 import Footer from './components/Footer';
-import RocketScroll from './components/sections/RocketScroll';
 import SectionDivider from './components/ui/SectionDivider';
 import { CalendlyProvider } from './context/CalendlyContext';
 
@@ -13,8 +12,7 @@ function App() {
     <CalendlyProvider>
       <div className="min-h-screen" style={{ backgroundColor: '#F3ECE1' }}>
         <Navbar />
-        <RocketScroll />
-        <TrueMeaning />
+        <Film />
         <CaseStudies />
         <SectionDivider variant={0} />
         <Contact />
