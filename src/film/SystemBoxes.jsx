@@ -34,8 +34,14 @@ function Box({ box, x, y, size, opacity, isNew }) {
  * appear: window during which boxes fade in one after another. connect: window during which lines draw.
  * showNew: progress at which the portal box appears (null = never). locks/flow: decorations for scene 5.
  */
-export default function SystemBoxes({ progress, appear = [0, 0], connect = [0, 0], showNew = null, locks = false, flow = false, static: isStatic = false }) {
+export default function SystemBoxes(props) {
   const isDesktop = useIsDesktop();
+  // Desktop and mobile draw different edge sets (mobile: the ring only), so the per-line hooks differ in
+  // number; remount on a breakpoint change instead of changing the hook count of a mounted component.
+  return <Layer key={isDesktop ? 'desktop' : 'mobile'} isDesktop={isDesktop} {...props} />;
+}
+
+function Layer({ isDesktop, progress, appear = [0, 0], connect = [0, 0], showNew = null, locks = false, flow = false, static: isStatic = false }) {
   const fallback = useMotionValue(1);
   const p = isStatic ? fallback : progress;
   const pos = positions(isDesktop);
