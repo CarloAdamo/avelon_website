@@ -42,7 +42,7 @@ A scene has a **scroll length `L`** in viewports: the distance the visitor scrol
 - Fade in and fade out are 0.2 viewport each: `0.2 / L`.
 - Two bubbles in one scene never overlap in their hold windows.
 
-Film totals: 18.5 viewports of scrubbing, 24.5 viewports of page height (six scenes, `L + 1` each). At a normal scroll pace of about two seconds per viewport that is 40 to 60 seconds; a fast skim is about 20 seconds. Lengths live in one place (`src/film/scenes/windows.js`); windows are fractions of `L`, so a scene can be lengthened later without retiming its bubbles.
+Film totals: 20 viewports of scrubbing, 26 viewports of page height (six scenes, `L + 1` each). At a normal scroll pace of about two seconds per viewport that is 40 to 60 seconds; a fast skim is about 20 seconds. Lengths live in one place (`src/film/scenes/windows.js`); windows are fractions of `L`, so a scene can be lengthened later without retiming its bubbles.
 
 ### 3.2 Components (`src/film/`)
 
@@ -98,14 +98,17 @@ Headline and subline fade out over `[0.85, 1.0]`.
 
 Static: headline, subline, poster, hint bubble.
 
-### Scene 1 — The question (L = 3)
+### Scene 1 — The question (L = 4.5)
 
-Backdrop: paper. Max (`max-stack`) stands at 22% from the left. Guide walks in from the right, `walk.window [0.0, 0.15]`, `x` from 110% to 66%; `sequence`: `guide-walk` frames until 0.15, `guide-wave` from 0.15, `guide-neutral` from 0.5.
+Backdrop: paper. **Video 3** (`guide-arrives`, `nearViewport`, desktop 1280×720 + mobile 854×480), scrubbed over `[0.02, 0.62]` and held on its last frame after that: Max stands with the stack at 28%, the guide walks in from the right, stops at 66%, waves, then puts his hands in his pockets and listens (start frame `/capture?scene=question`, end frame `/capture?scene=question-end`). Desktop: the clip sits in the 16:9 camera (§3.5), `object-fit: cover`, edges masked into the paper. Mobile: full-width 16:9 band at the bottom of the stage, bubbles stacked above it (slot 1 for Max, slot 2 for the guide), as on the title card. No live cutouts in pinned mode (changed from the v1 two-frame walk cycle after the owner's review: two frames cannot read as a walk).
 
-- Bubble Max `[0.10, 0.18, 0.50, 0.58]`: "Our IT partner sorts out the laptops and the Microsoft account. Is that ***it***?"
-- Bubble guide `[0.58, 0.66, 0.98, 1.0]`: "Laptops are the ***easy*** part. Walk with me."
+- Bubble Max `[0.05, 0.11, 0.35, 0.41]`: "It used to be Microsoft and a printer. Now it's Microsoft, Slack, HubSpot, Notion, ChatGPT, Claude. All of it has AI. All of it wants to ***connect***."
+- Bubble Max `[0.41, 0.47, 0.68, 0.74]`: "And nobody here knows where the data actually ***goes***."
+- Bubble guide `[0.74, 0.80, 1.0, 1.0]`: "That's the ***job*** now. Walk with me."
 
-Static: both actors, both bubbles.
+The message of the scene (owner's brief, v1 review): the landscape has exploded from Microsoft-and-a-printer to a dozen AI-capable tools that all want to connect, and nobody owns how they connect, where the data flows or what the risks are. The paper stack is that pile. The guide does not pitch; he names it as the job.
+
+Static: both actors (cutouts), three bubbles.
 
 ### Scene 2 — Everything you run on, connected (L = 4.5)
 
@@ -164,6 +167,7 @@ Generate with `codex exec --sandbox workspace-write --skip-git-repo-check -C <di
 | `canon/max-sheet.png`, `canon/guide-sheet.png` | reference | copied from the scratchpad (§2) |
 | `actors/max-neutral`, `max-walk-a`, `max-walk-b`, `max-stack`, `max-relieved` | cutout, transparent, ~900px tall | walk frames: same pose, legs swapped |
 | `actors/guide-neutral`, `guide-walk-a`, `guide-walk-b`, `guide-wave`, `guide-point`, `guide-draw` | cutout | |
+| `actors/max-stack-stand` | cutout | Max standing with the stack: start frame of the Question clip and its static fallback |
 | `actors/agent-bot` | cutout, ~300px | round sketched helper with a satchel, not resembling any known robot |
 | `props/paper-stack` | cutout | |
 | `backdrops/office.webp` (+ `office-800.webp`) | 16:9, 2048px wide | empty office: desk, window, plant, no people |
@@ -179,6 +183,7 @@ Two clips, both image-to-video from a composited start frame: the relevant cutou
 |---|---|---|---|---|
 | `video/max-arrives` | `max-stack` on paper, left of centre | Seedance 2.5 (chosen in the model test) | 5 s | desktop 1280×720 + mobile 854×480 |
 | `video/guide-draws` | `guide-draw` + `max-neutral` on office, boxes connected, no portal | same | 5 s | desktop only |
+| `video/guide-arrives` | start: `max-stack` at 28% on paper; end: + `guide-neutral` at 66% | same | 5 s | desktop 1280×720 + mobile 854×480 |
 
 Command: `higgsfield generate create <model> [--mode omni_reference] --start-image <frame.png> --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false --prompt '<motion prompt>' --wait --json`. Download the result URL, then re-encode:
 
@@ -213,7 +218,7 @@ The subagent that runs this pass reports screenshots and numbers, not opinions.
 
 ## 9. Risks
 
-- **Scroll fatigue.** 18.5 viewports of scrubbing before interactive content, chosen deliberately so the film is not over in half a minute. Mitigation: nav anchors for skippers, something moving in every scene, the "after" payoff in scene 5. If the browser pass feels slow, lengths come down in one file.
+- **Scroll fatigue.** 20 viewports of scrubbing before interactive content, chosen deliberately so the film is not over in half a minute. Mitigation: nav anchors for skippers, something moving in every scene, the "after" payoff in scene 5. If the browser pass feels slow, lengths come down in one file.
 - **Character drift.** Mitigated structurally: cutouts generated once and reused; backdrops empty; videos from composited frames.
 - **Moderation blocks.** Output-stage blocks when a result resembles a known mascot. Mitigation: the invariants line in every prompt; retry once with softer wording; never add mascot tropes.
 - **Video style drift.** Image-to-video may lose the pencil look or move the camera. Mitigation: model comparison test before producing the real clips; acceptance criteria in §6.2.

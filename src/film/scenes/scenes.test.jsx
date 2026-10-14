@@ -10,7 +10,7 @@ import { SCENES } from './windows';
 
 const scenes = [
   ['title', TitleCard, ['IT partner', 'help']],
-  ['question', Question, ['Is that', 'Walk with me']],
+  ['question', Question, ['printer', 'Walk with me']],
   ['connect', Connect, ['We look after', 'One customer, one record, everywhere']],
   ['agents', Agents, ['AI', 'write the first draft']],
   ['build', Build, ['missing', 'Usually in weeks']],

@@ -1,6 +1,6 @@
 # Film clip prompts
 
-The two scroll-scrubbed clips in `public/film/video/` were generated with Higgsfield Seedance 2.5
+The scroll-scrubbed clips in `public/film/video/` were generated with Higgsfield Seedance 2.5
 (`omni_reference`, start image, 5 s, 720p, 16:9, no audio) and then re-encoded all-intra
 (see `.claude/skills/verify/SKILL.md`). These are the accepted attempts.
 
@@ -49,3 +49,21 @@ Seedance renders the clip slightly shrunk against its start frame (content at 0.
 undoes this with `CLIP_FIT`. After regenerating, extract the first and last frames
 (`ffmpeg -i raw.mp4 -frames:v 1 first.png`, `ffmpeg -sseof -0.1 -i raw.mp4 -frames:v 1 last.png`) and run
 `python3 scripts/film/measure-clip.py first.png last.png` next to `frame-build.png`; it prints the CSS.
+
+## Video 3: the guide arrives (`guide-arrives.mp4`, Question; start `frame-q-start.png`, end `frame-q-end.png`)
+
+Job `ce847097-10d3-43b6-bd12-2f83ed9b1eba`, second attempt. Start frame `/capture?scene=question` (`max-stack-stand` at 28%; the first attempt, job `28247c91-6c86-410c-90ce-bd36284a50d3`, started from the walking cutout and left Max frozen mid-stride for the whole clip), end
+frame `/capture?scene=question-end` (Max + `guide-neutral` at 66%), Max's title reference as an extra image
+reference. Desktop 1280×720 and mobile 854×480 encodes, no trim. The scene scrubs it over `[0.02, 0.62]` and
+holds the last frame while the guide's bubble is up.
+
+```bash
+higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-q-start.png --end-image frame-q-end.png \
+  --image-references frame-title.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false \
+  --wait --wait-timeout 20m --wait-interval 15s --json --prompt "<prompt>" > video.json
+```
+
+> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same two characters and drawing style as the start and end frames. The shorter character on the left (the founder) stands in place the whole time, struggling to balance the wobbling stack of papers with the laptop on top: the stack sways, he shifts his weight from foot to foot, sweat drops fly, a sheet slips off, and he glances to the right. From the very first second the taller character in the scarf walks in from the right edge with a bouncy cartoon walk, reaches the position shown in the end frame, gives a friendly wave with one hand, then puts both hands in his jacket pockets and stands listening with a calm smile, exactly as in the end frame. Side view, same size throughout. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie and the muted purple scarf.
+
+Timing in the clip: Max shifts his weight and the stack sways throughout; the guide enters at about 1 s,
+stops at about 2.5 s, waves at 3.5–4 s and has his hands in his pockets by 5 s.
