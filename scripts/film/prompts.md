@@ -52,20 +52,20 @@ undoes this with `CLIP_FIT`. After regenerating, extract the first and last fram
 
 ## Video 3: the guide arrives (`guide-arrives.mp4`, Question; start `frame-q-start.png`, end `frame-q-end.png`)
 
-Job `ce847097-10d3-43b6-bd12-2f83ed9b1eba`, second attempt. Start frame `/capture?scene=question` (`max-stack-stand` at 28%; the first attempt, job `28247c91-6c86-410c-90ce-bd36284a50d3`, started from the walking cutout and left Max frozen mid-stride for the whole clip), end
+Job `64011adb-08a3-4715-a65a-148f2dc59e68`, third attempt, **no `--image-references`**: the second attempt (`ce847097-…`) passed Max's title frame as an extra reference and Seedance blended that walking drawing into Max for a few frames, so he changed character mid-clip. Start and end frames alone carry both characters; never add a reference that shows a character in a different drawing. Start frame `/capture?scene=question` (`max-stack-stand` at 28%; the first attempt, job `28247c91-…`, started from the walking cutout and left Max frozen mid-stride), end
 frame `/capture?scene=question-end` (Max + `guide-neutral` at 66%), Max's title reference as an extra image
 reference. Desktop 1280×720 and mobile 854×480 encodes, no trim. The scene scrubs it over `[0.02, 0.62]` and
 holds the last frame while the guide's bubble is up.
 
 ```bash
 higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-q-start.png --end-image frame-q-end.png \
-  --image-references frame-title.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false \
+  --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false \
   --wait --wait-timeout 20m --wait-interval 15s --json --prompt "<prompt>" > video.json
 ```
 
-> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same two characters and drawing style as the start and end frames. The shorter character on the left (the founder) stands in place the whole time, struggling to balance the wobbling stack of papers with the laptop on top: the stack sways, he shifts his weight from foot to foot, sweat drops fly, a sheet slips off, and he glances to the right. From the very first second the taller character in the scarf walks in from the right edge with a bouncy cartoon walk, reaches the position shown in the end frame, gives a friendly wave with one hand, then puts both hands in his jacket pockets and stands listening with a calm smile, exactly as in the end frame. Side view, same size throughout. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie and the muted purple scarf.
+> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same two characters and drawing style as the start and end frames. the characters must keep exactly the same faces, proportions and line work in every frame. The shorter character on the left (the founder with the paper stack and laptop) keeps both feet planted in the same spot for the whole clip and does not walk or step; only the stack sways gently, a sweat drop flies, and his eyes glance to the right. From the very first second the taller character in the scarf walks in from the right edge with a bouncy cartoon walk, reaches the position shown in the end frame, gives a friendly wave with one hand, then puts both hands in his jacket pockets and stands listening with a calm smile, exactly as in the end frame. Side view, same size throughout. Camera static, no zoom, no pan. The paper background stays uniform cream. No text, no speech bubbles, no other characters, no colour beyond the rust-red tie and the muted purple scarf.
 
-Timing in the clip: Max shifts his weight and the stack sways throughout; the guide enters at about 1 s,
+Timing in the clip: Max stays planted and the stack sways; the guide enters at about 1 s,
 stops at about 2.5 s, waves at 3.5–4 s and has his hands in his pockets by 5 s.
 
 ## Video 4: into the office (`office-arrives.mp4`, Connect; start `frame-c-start.png`, end `frame-c-end.png`)
