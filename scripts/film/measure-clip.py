@@ -5,7 +5,7 @@
 import sys, numpy as np
 from PIL import Image
 cap = np.asarray(Image.open('frame-build.png').convert('L'), dtype=float)
-C = {'email': (902, 200), 'files': (1498, 380), 'crm': (1690, 620), 'invoicing': (1459, 860), 'chat': (211, 860), 'google': (211, 580), 'microsoft': (346, 320)}
+C = {'microsoft': (902, 200), 'slack': (1498, 380), 'hubspot': (1690, 620), 'fortnox': (1459, 860), 'claude': (211, 860), 'chatgpt': (211, 580), 'notion': (346, 320)}
 def match(frame, cx, cy, half=70, R=40):
     tb = cap[cy-half:cy+half, cx-half:cx+half]; best = None
     for dy in range(-R, R+1):

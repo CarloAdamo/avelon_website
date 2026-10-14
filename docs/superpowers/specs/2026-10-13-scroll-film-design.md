@@ -8,7 +8,18 @@ The whole site becomes one short cartoon film that plays as the visitor scrolls.
 
 The one sentence a visitor must leave with:
 
-> A regular IT partner handles your Microsoft account and your laptops. Avelon looks after everything you run on: connects what you have, shows you how to work with AI agents, builds what's missing. Secure and transparent, so you always know where your data goes. And the same people stay with you.
+> Avelon sets up how your company works with AI, and keeps it current as the tools change. Tell us which tools you use, and we show you how meetings, projects and invoicing should work, connect it, and keep it up to date for a monthly fee you can see.
+
+**Story v2 (2026-10-14, after the owner's v1 review and three independent critiques: a buyer, an MSP operator, a positioning strategist).** The offer is not "IT partner" (a commodity box next to laptop suppliers) and not "digital landscape" (consultant wallpaper). It is a way of working, installed and kept current: the customer names their tools, Avelon answers with how meetings, projects and invoicing should work, which tool to add, and what it costs a month, then connects it and keeps it current as the tools change (that is the subscription; the tools change every month, so the work never ends). The film tells it in this order:
+
+1. Title: "How your company works now." plus the two sentences above. Max walks past with the stack.
+2. The chaos: Max lists his tools, nobody knows where the data goes. Guide: "That's what we do. Walk with me."
+3. Stack in: the office, the customer's real tools appear as boxes and get connected. Data visibility is promised here, not in scene 6.
+4. Ways of working out, the hero scene: the meeting flow is played out between the boxes (meeting ends, Wispr Flow, Claude, the right project, next meeting's material on Max's desk); the stack shrinks; a playbook card shows the area, the tool to add and the monthly cost. A missing box is drawn in as a beat inside this scene (Build is no longer a scene).
+5. Current: a tool is swapped and the flow keeps running. "Tools change every month. We keep you current, and you see what it costs."
+6. The ending: Max without the stack. "Tell us your stack. We'll send your playbook." The contact form.
+
+Scenes 3 to 5 of the v1 spec below (AI agents, Build, Secure and we stay) are superseded by this list and will be rewritten scene by scene as they are built. Words the film does not use: "IT partner" (for us), "digital landscape", "AI era", "nobody clicks", "transform". The buyer's own line in scene 2 stays as written.
 
 Audience: founder or CEO of a 10–100 person company, drowning in systems and admin. Language: English. Brand: `BRAND.md` (paper `#F3ECE1`, ink `#1F1A14`, accent `#6B5B95`, Inter + one Caveat word per phrase, calm scroll-driven motion, no neon, no gradients, no "it isn't X, it's Y" copy).
 
@@ -90,7 +101,7 @@ Windows are progress fractions and respect §3.1 (hold ≥ `0.8/L`). Bubble wind
 
 ### Scene 0 — Title card (L = 2)
 
-Headline: "Your IT partner for the **AI** era." (changed from "Your true\* digital partner…" after the v1 review: the film's message is IT partner for the AI era, and the asterisk no longer has a footnote). Left column on desktop, top on mobile. Right column / lower half: **Video 1**, Max arriving from the left with the wobbling paper stack and laptop, two sheets fluttering down, `loadPolicy="afterLoad"`, scrubbed over `[0.0, 0.8]`. The clip starts and ends on empty paper (blank start and end frames, Max as an image reference): Max is not visible before the scroll begins, and he walks all the way out of the right edge. Under the headline, Inter at 70%: "We look after your whole digital landscape: connect your systems, put AI agents to work, build what's missing. Secure and transparent."
+Headline: "How your company works **now**." (v2; v1 had "Your IT partner for the AI era", and before that "Your true\* digital partner…"). Left column on desktop, top on mobile. Right column / lower half: **Video 1**, Max arriving from the left with the wobbling paper stack and laptop, two sheets fluttering down, `loadPolicy="afterLoad"`, scrubbed over `[0.0, 0.8]`. The clip starts and ends on empty paper (blank start and end frames, Max as an image reference): Max is not visible before the scroll begins, and he walks all the way out of the right edge. Under the headline, Inter at 70%, max 44ch: the two offer sentences from §1 verbatim.
 
 Scroll hint: a small bubble from Max, `[0, 0, 0.25, 0.4]`, with the existing bouncing arrow beneath it: **"A little *help* here?"** The bubble is the invitation; the arrow is the affordance. No "scroll to…" instruction. (Alternatives for the owner to swap: "No popcorn *required*." / "Runtime: one *coffee*.")
 
@@ -104,20 +115,23 @@ Backdrop: paper. **Video 3** (`guide-arrives`, `nearViewport`, desktop 1280×720
 
 - Bubble Max `[0.05, 0.11, 0.35, 0.41]`: "It used to be Microsoft and a printer. Now it's Microsoft, Slack, HubSpot, Notion, ChatGPT, Claude. All of it has AI. All of it wants to ***connect***."
 - Bubble Max `[0.41, 0.47, 0.68, 0.74]`: "And nobody here knows where the data actually ***goes***."
-- Bubble guide `[0.74, 0.80, 1.0, 1.0]`: "That's the ***job*** now. Walk with me."
+- Bubble guide `[0.74, 0.80, 1.0, 1.0]`: "That's what we ***do***. Walk with me."
 
 The message of the scene (owner's brief, v1 review): the landscape has exploded from Microsoft-and-a-printer to a dozen AI-capable tools that all want to connect, and nobody owns how they connect, where the data flows or what the risks are. The paper stack is that pile. The guide does not pitch; he names it as the job.
 
 Static: both actors (cutouts), three bubbles.
 
-### Scene 2 — Everything you run on, connected (L = 4.5)
+### Scene 2 — Stack in: your tools, connected (L = 4.5)
 
-Backdrop: empty sketched office. Both characters walk in `[0.0, 0.12]` and stop (Max 30%, guide 44%). `SystemBoxes appear=[0.12, 0.45]`, `connect=[0.50, 0.85]`.
+Backdrop: the sketched office. **Video 4** (`office-arrives`, desktop only, `nearViewport`): the office starts empty, both characters walk in from the left (the guide leads, Max follows with the stack) and stop at their marks (Max 30%, guide 44%, the guide pointing at the wall), scrubbed over `[0.0, 0.25]` and held on its last frame for the rest of the scene (start frame `/capture?scene=connect`, end frame `/capture?scene=connect-end`, the Question end frame as the character reference). The clip renders inside the camera with the shared `CLIP_FIT` so its last frame coincides with the same composition the next scene starts from. Mobile: no video; `max-stack-stand` and `guide-point` stand at 26% / 72% from the start.
 
-- Bubble guide `[0.18, 0.25, 0.48, 0.55]`: "Email, files, CRM, invoicing, chat. We look after ***all*** of it."
-- Bubble guide `[0.58, 0.65, 0.93, 1.0]`: "First we ***connect*** what you already have. One customer, one record, everywhere."
+The boxes are the customer's real stack, seven on the ring (clockwise from the top): Microsoft 365, Slack, HubSpot, Fortnox, Claude, ChatGPT, Notion (logos where the repo has them, text labels otherwise). `SystemBoxes appear=[0.26, 0.50]`, `connect=[0.58, 0.90]`.
 
-Static: office, both actors, boxes connected, both bubbles.
+- Bubble guide `[0.28, 0.35, 0.55, 0.62]`: "Start with what you ***have***."
+- Bubble guide `[0.62, 0.69, 0.95, 1.0]`: "We connect it, and we know where every ***line*** goes."
+- Caption (same window as the second bubble): "Every line documented. You always know where your data goes."
+
+Static: office, both actors (cutouts), boxes connected, both bubbles, the caption.
 
 ### Scene 3 — AI agents (L = 3)
 

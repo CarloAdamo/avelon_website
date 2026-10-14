@@ -18,11 +18,11 @@ function Headline() {
   return (
     <>
       <h1 className="font-extrabold leading-[1.05]" style={{ color: INK, fontSize: 'clamp(2rem, 4.2vw, 3.75rem)' }}>
-        <span className="block">Your IT partner</span>
-        <span className="block">for the <Hand>AI</Hand> era.</span>
+        <span className="block">How your company</span>
+        <span className="block">works <Hand>now</Hand>.</span>
       </h1>
-      <p className="mt-4 md:mt-6 leading-relaxed mx-auto md:mx-0" style={{ color: INK, opacity: 0.7, fontSize: 'clamp(0.95rem, 1.05vw, 1.125rem)', maxWidth: '34ch' }}>
-        We look after your whole digital landscape: connect your systems, put AI agents to work, build what's missing. Secure and transparent.
+      <p className="mt-4 md:mt-6 leading-relaxed mx-auto md:mx-0" style={{ color: INK, opacity: 0.7, fontSize: 'clamp(0.95rem, 1.05vw, 1.125rem)', maxWidth: '44ch' }}>
+        Avelon sets up how your company works with AI, and keeps it current as the tools change. Tell us which tools you use, and we show you how meetings, projects and invoicing should work, connect it, and keep it up to date for a monthly fee you can see.
       </p>
     </>
   );

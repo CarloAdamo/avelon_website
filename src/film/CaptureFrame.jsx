@@ -37,6 +37,28 @@ function QuestionEnd() {
   );
 }
 
+// Connect clip: the empty office (start); Max with the stack and the guide pointing, at their marks (end).
+function ConnectStart() {
+  return (
+    <>
+      <Paper />
+      <Camera><Backdrop {...OFFICE} /></Camera>
+    </>
+  );
+}
+function ConnectEnd() {
+  return (
+    <>
+      <Paper />
+      <Camera>
+        <Backdrop {...OFFICE} />
+        <Actor static={{ src: `${A}/max-stack-stand.webp`, left: '30%' }} alt="Max" />
+        <Actor static={{ src: `${A}/guide-point.webp`, left: '44%' }} alt="The guide" />
+      </Camera>
+    </>
+  );
+}
+
 function BuildStart() {
   return (
     <>
@@ -52,12 +74,12 @@ function BuildStart() {
 }
 
 /**
- * Dev-only route `/capture?scene=title|build|blank|question|question-end` (`npm run dev`): a 1920×1080 stage used to screenshot video
+ * Dev-only route `/capture?scene=title|build|blank|question|question-end|connect|connect-end` (`npm run dev`): a 1920×1080 stage used to screenshot video
  * start frames. The stage is 16:9, so the office camera fills it and the capture equals the live camera.
  */
 export default function CaptureFrame() {
   const scene = new URLSearchParams(window.location.search).get('scene') || 'title';
-  const Composition = { build: BuildStart, blank: Blank, question: QuestionStart, 'question-end': QuestionEnd }[scene] || Title;
+  const Composition = { build: BuildStart, blank: Blank, question: QuestionStart, 'question-end': QuestionEnd, connect: ConnectStart, 'connect-end': ConnectEnd }[scene] || Title;
   return (
     <div id="capture-stage" style={{ position: 'relative', width: 1920, height: 1080, overflow: 'hidden', backgroundColor: '#F3ECE1' }}>
       <Composition />

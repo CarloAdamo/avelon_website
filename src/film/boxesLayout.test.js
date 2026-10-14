@@ -10,7 +10,7 @@ describe('boxes', () => {
   });
   it('places every box on desktop and on the mobile 4x2 grid', () => {
     const d = positions(true);
-    expect(d.email).toEqual([47, 12]);
+    expect(d.microsoft).toEqual([47, 12]);
     expect(d.portal).toEqual([62, 66]);
     const m = positions(false);
     expect(Object.keys(m)).toHaveLength(8);
@@ -28,15 +28,15 @@ describe('edges and segments', () => {
     expect(RING_EDGES).toHaveLength(7);
     expect(CHORDS).toHaveLength(2);
     expect(EDGES).toEqual([...RING_EDGES, ...CHORDS]);
-    expect(EDGES).toContainEqual(['email', 'crm']);
-    expect(EDGES).toContainEqual(['microsoft', 'crm']);
+    expect(EDGES).toContainEqual(['microsoft', 'hubspot']);
+    expect(EDGES).toContainEqual(['notion', 'hubspot']);
     expect(PORTAL_EDGES).toHaveLength(2);
   });
   it('resolves segments to coordinates and adds portal edges on demand', () => {
     expect(segments(true, false)).toHaveLength(9);
     expect(segments(true, true)).toHaveLength(11);
-    expect(segments(true, false).some((e) => e.from === 'email' && e.to === 'crm')).toBe(true);
-    const s = segments(true, false).find((e) => e.from === 'email' && e.to === 'files');
+    expect(segments(true, false).some((e) => e.from === 'microsoft' && e.to === 'hubspot')).toBe(true);
+    const s = segments(true, false).find((e) => e.from === 'microsoft' && e.to === 'slack');
     expect(s).toMatchObject({ x1: 47, y1: 12, x2: 78, y2: 30 });
   });
 });

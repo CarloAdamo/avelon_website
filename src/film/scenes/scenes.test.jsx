@@ -9,9 +9,9 @@ import Stay from './Stay';
 import { SCENES } from './windows';
 
 const scenes = [
-  ['title', TitleCard, ['IT partner', 'help']],
+  ['title', TitleCard, ['works', 'help']],
   ['question', Question, ['printer', 'Walk with me']],
-  ['connect', Connect, ['We look after', 'One customer, one record, everywhere']],
+  ['connect', Connect, ['Start with', 'every']],
   ['agents', Agents, ['AI', 'write the first draft']],
   ['build', Build, ['missing', 'Usually in weeks']],
   ['stay', Stay, ['where your data goes', 'Same people next year']],

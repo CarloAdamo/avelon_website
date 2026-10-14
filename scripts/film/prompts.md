@@ -67,3 +67,22 @@ higgsfield generate create seedance_2_5 --mode omni_reference --start-image fram
 
 Timing in the clip: Max shifts his weight and the stack sways throughout; the guide enters at about 1 s,
 stops at about 2.5 s, waves at 3.5–4 s and has his hands in his pockets by 5 s.
+
+## Video 4: into the office (`office-arrives.mp4`, Connect; start `frame-c-start.png`, end `frame-c-end.png`)
+
+Job `7843ab0a-7df8-4d53-b492-d0a01cabe865`, first attempt. Start frame `/capture?scene=connect` (the empty office in the camera), end
+frame `/capture?scene=connect-end` (`max-stack-stand` at 30%, `guide-point` at 44%), the Question end frame
+as the character reference. Desktop only, no trim. The scene scrubs it over `[0, 0.25]` and holds the last
+frame while the boxes appear and connect over it; `CLIP_FIT` (shared, `src/film/constants.js`) maps it onto
+the camera.
+
+```bash
+higgsfield generate create seedance_2_5 --mode omni_reference --start-image frame-c-start.png --end-image frame-c-end.png \
+  --image-references frame-q-end.png --duration 5 --resolution 720p --aspect_ratio 16:9 --generate_audio false \
+  --wait --wait-timeout 20m --wait-interval 15s --json --prompt "<prompt>" > video.json
+```
+
+> Hand-drawn pencil sketch animation on cream paper, vintage 1930s cartoon style, exactly the same office and drawing style as the start frame and exactly the same two characters as the reference image and the end frame. The office starts empty. From the very first second the two characters walk in from the left edge with bouncy cartoon walks: the taller character in the scarf leads, the shorter founder follows carrying a wobbling stack of papers with a laptop on top, sweat drops, two sheets fluttering off. They stop in front of the desk at the positions shown in the end frame: the founder stands holding the stack, the taller character turns toward the wall on the right and points at it with one hand, other hand on hip, exactly as in the end frame. Side view, same size throughout. The office furniture stays exactly still. Camera static, no zoom, no pan. No text, no speech bubbles, no other characters, no boxes or diagrams on the wall, no colour beyond the rust-red tie and the muted purple scarf.
+
+Timing in the clip: the office is empty for about 0.5 s, the guide enters at about 1 s and Max follows, both
+are at their marks by about 3 s, and the guide is pointing from about 4 s.

@@ -8,14 +8,24 @@
 
 ## 1. Core idea
 
-**Your IT partner for the *AI* era.**
+**How your company works *now*.**
 
-"IT partner" is the category the reader already knows; *"AI"* is the loaded
-word — the reason the category has to mean more than laptops and licences. The
-film at the top of the site (§4.3) is what explains that, so the headline makes
-the claim and the scroll earns it. (Until October 2026 the line was "Your
-true\* digital partner for the AI era"; the asterisk now lives on only as the
-section-divider motif.)
+What Avelon sells, in two sentences (use these verbatim wherever the company
+is described): *Avelon sets up how your company works with AI, and keeps it
+current as the tools change. Tell us which tools you use, and we show you how
+meetings, projects and invoicing should work, connect it, and keep it up to
+date for a monthly fee you can see.*
+
+The headline promises a way of working, not a category: "IT partner" puts us
+next to the laptop suppliers, and "digital landscape" is consultant wallpaper.
+*"Now"* is the loaded word: the tools change every month, and the subscription
+exists to keep the customer current. The film at the top of the site (§4.3)
+earns the claim. (Until October 2026 the line was "Your true\* digital partner
+for the AI era"; the asterisk lives on only as the section-divider motif.)
+
+Words we do not use: "digital landscape", "AI era", "transform", "unlock",
+"nobody clicks" (every automation vendor has said it), "IT partner" as a label
+for ourselves.
 
 The visual concept is a **cross between hand-drawn sketch and clean modern**.
 Pencil on cream paper, but with confident sans-serif typography and crisp
@@ -80,7 +90,7 @@ someone is writing in the margin of a printed document.
 The brand's signature typographic move: **a clean Inter headline with one
 handwritten Caveat word**.
 
-> Your IT partner for the **AI** era.
+> How your company works **now**.
 > True means **rethinking** what's possible.
 > Real **customer** stories.
 > Get in **touch**.
@@ -249,7 +259,8 @@ quiet and attentive, not flashy.
 - Em-dash sentences that hinge on a contrast or reveal
 
 **Reference phrases that work**:
-- *"Your IT partner for the AI era."*
+- *"How your company works now."*
+- *"Tell us which tools you use. We show you how meetings, projects and invoicing should work, and what it costs a month."*
 - *"We think with you. We build with you. We stay with you."*
 - *"Most teams ask what to automate. We ask what to redesign."* (this one is on the line, but lands because the contrast is concrete)
 - *"The build that took quarters and millions now ships in weeks."*

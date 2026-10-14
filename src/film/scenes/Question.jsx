@@ -29,7 +29,7 @@ function Lines({ progress }) {
         And nobody here knows where the data actually <Hand>goes</Hand>.
       </Bubble>
       <Bubble speaker="guide" {...common('guide')}>
-        That's the <Hand>job</Hand> now. Walk with me.
+        That's what we <Hand>do</Hand>. Walk with me.
       </Bubble>
     </>
   );
