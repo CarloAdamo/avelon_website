@@ -8,7 +8,7 @@ function Title() {
   return (
     <>
       <Paper />
-      <Actor static={{ src: `${A}/max-stack.webp`, left: '30%' }} alt="Max" />
+      <Actor static={{ src: `${A}/max-stack-stand.webp`, left: '30%' }} alt="Max" />
     </>
   );
 }

@@ -34,7 +34,7 @@ function Static() {
       <div className="pt-24"><Headline /></div>
       <div className="relative mt-8" style={{ height: '60svh' }}>
         <Paper />
-        <Actor static={{ src: `${A}/max-stack.webp`, left: '50%' }} alt="Max, carrying a wobbling stack of papers" />
+        <Actor static={{ src: `${A}/max-stack-stand.webp`, left: '50%' }} alt="Max, holding a wobbling stack of papers" />
       </div>
       <Bubble speaker="max" static>A little <Hand>help</Hand> here?</Bubble>
     </>
